@@ -67,7 +67,8 @@ func uploadHandle(w http.ResponseWriter, r *http.Request) {
 func portraitHandle(w http.ResponseWriter, r *http.Request) {
 
     if r.Method == "GET" {
-        io.WriteString(w, "<html><head><title>我的第一个页面</title></head><body><form action='portrait?login_user=3' method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file'  /><br/><label><input type=\"submit\" value=\"上传图片\"/></label></form></body></html>")
+        login_user := r.FormValue("login_user")
+        io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action='portrait?login_user=%s' method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file'  /><br/><label><input type=\"submit\" value=\"上传图片\"/></label></form></body></html>", login_user))
     } else {
         file, head, err := r.FormFile("file")
         if err != nil {
