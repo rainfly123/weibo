@@ -429,6 +429,21 @@ func profileHandle(w http.ResponseWriter, req *http.Request) {
     client.Close() 
 }
 
+func recommend(client *redis.Client) []string {
+
+    var users []string
+    weibos, _ := client.LRange("weibo_message", 0, 100)
+    for _, v := range weibos{
+        key := "weibo_" + v
+        ls, err := client.HGet(key, "author")
+        if err != nil {
+            continue
+        }
+        users = append(users, ls)
+   }
+   return users
+}
+
 func getUserinfo(userid string, client *redis.Client, detail bool ) User {
 
     var user User
@@ -468,14 +483,20 @@ func getUserinfo(userid string, client *redis.Client, detail bool ) User {
            user.Following = append(user.Following, temp)
         }
 
-        s, _ := client.SRandMember("all_users", 10)
-        for index, us := range(s) {
-            if has(following, us) {
-               s = append(s[:index], s[index + 1:]...)
+       // s, _ := client.SRandMember("all_users", 10)
+        var recuser []string
+        s := recommend(client)
+        for _, us := range(s) {
+            if has(following, us) || strings.EqualFold(us, userid) {
+                continue
+            }else {
+                if !has(recuser, us) {
+                    recuser = append(recuser, us)
+                }
             }
         }
         
-        for _, p := range(s) {
+        for _, p := range(recuser) {
            temp = getUserinfo(p, client, false)
            user.Recommend = append(user.Recommend, temp)
         }
