@@ -12,8 +12,106 @@ http://192.168.1.251:8888/comment?login_user=2&weiboid=3&comment=%E6%A5%BC%E4%B8
 4 查询评论
 http://192.168.1.251:8888/checkcomment?weiboid=3
 返回评论列表JSON
-[{"Author":"2","Comment":"“地方的”"},{"Author":"2","Comment":"“地方的”"},{"Author":"2","Comment":"“地方的”"},
-{"Author":"2","Comment":"“地方的”"},{"Author":"2","Comment":"楼主傻逼"},{"Author":"2","Comment":"楼主儿傻逼"}]
+[
+    {
+        "Author": {
+            "Userid": "2",
+            "nickname": "蓝天",
+            "Gender": "太监",
+            "Location": "广州",
+            "Signature": "爱蓝天",
+            "Portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
+            "Follower": null,
+            "Following": null,
+            "Recommend": null
+        },
+        "Comment": "“地方的”"
+    },
+    {
+        "Author": {
+            "Userid": "2",
+            "nickname": "蓝天",
+            "Gender": "太监",
+            "Location": "广州",
+            "Signature": "爱蓝天",
+            "Portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
+            "Follower": null,
+            "Following": null,
+            "Recommend": null
+        },
+        "Comment": "“地方的”"
+    },
+    {
+        "Author": {
+            "Userid": "2",
+            "nickname": "蓝天",
+            "Gender": "太监",
+            "Location": "广州",
+            "Signature": "爱蓝天",
+            "Portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
+            "Follower": null,
+            "Following": null,
+            "Recommend": null
+        },
+        "Comment": "“地方的”"
+    },
+    {
+        "Author": {
+            "Userid": "2",
+            "nickname": "蓝天",
+            "Gender": "太监",
+            "Location": "广州",
+            "Signature": "爱蓝天",
+            "Portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
+            "Follower": null,
+            "Following": null,
+            "Recommend": null
+        },
+        "Comment": "“地方的”"
+    },
+    {
+        "Author": {
+            "Userid": "2",
+            "nickname": "蓝天",
+            "Gender": "太监",
+            "Location": "广州",
+            "Signature": "爱蓝天",
+            "Portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
+            "Follower": null,
+            "Following": null,
+            "Recommend": null
+        },
+        "Comment": "楼主傻逼"
+    },
+    {
+        "Author": {
+            "Userid": "2",
+            "nickname": "蓝天",
+            "Gender": "太监",
+            "Location": "广州",
+            "Signature": "爱蓝天",
+            "Portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
+            "Follower": null,
+            "Following": null,
+            "Recommend": null
+        },
+        "Comment": "楼主儿傻逼"
+    },
+    {
+        "Author": {
+            "Userid": "2",
+            "nickname": "蓝天",
+            "Gender": "太监",
+            "Location": "广州",
+            "Signature": "爱蓝天",
+            "Portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
+            "Follower": null,
+            "Following": null,
+            "Recommend": null
+        },
+        "Comment": "楼主儿傻逼"
+    }
+]
 
 5 写微博
 http://192.168.1.251:8888/write?author=2&msg=%E4%BD%A0%E5%A5%BD%E6%88%91%E6%98%AF2%E5%8F%B7%E7%AC%A8%E8%9B%8B&pic=a.jpg,b.jpg
