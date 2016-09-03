@@ -115,6 +115,10 @@ http://192.168.1.251:8888/checkcomment?weiboid=3
 
 5 写微博
 http://192.168.1.251:8888/write?author=2&msg=%E4%BD%A0%E5%A5%BD%E6%88%91%E6%98%AF2%E5%8F%B7%E7%AC%A8%E8%9B%8B&pic=a.jpg,b.jpg
+5.1 写微博
+http://192.168.1.251:8888/writev2?
+author=2&msg=%E4%BD%A0%E5%A5%BD%E6%88%91%E6%98%AF2%E5%8F%B7%E7%AC%A8%E8%9B%8B
+Multipart-Form   file0,file1....
 
 6 关注
 http://192.168.1.251:8888/concern?login_user=1&concern=2
