@@ -89,6 +89,75 @@ func writeHandle(w http.ResponseWriter, req *http.Request) {
 
 	client.Close()
 }
+func receiveFile(w http.ResponseWriter, req *http.Request, name string) string {
+	file, head, err := req.FormFile(name)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	defer file.Close()
+
+	temp := getFileName(head.Filename)
+	uuidFile := UPLOAD_PATH + temp
+	fW, err := os.Create(uuidFile)
+	if err != nil {
+		fmt.Println("create file error")
+		return ""
+	}
+	defer fW.Close()
+	_, err = io.Copy(fW, file)
+	if err != nil {
+		fmt.Println("copy file error")
+		return ""
+	}
+	return (ACCESS_URL + temp)
+}
+
+func writev2Handle(w http.ResponseWriter, req *http.Request) {
+	if req.Method == "GET" {
+		io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action='writev2?author=%s&msg=%s' method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file0'/><br/><<input type=\"file\" name='file1'/><br/><label><input type=\"submit\" value=\"上传图片\"/></label></form></body></html>", req.FormValue("author"), req.FormValue("msg")))
+	} else {
+		var pictures []string
+		for i := 0; i < 9; i++ {
+			var filenametemp string
+			filenametemp = receiveFile(w, req, fmt.Sprintf("file%d", i))
+			if len(filenametemp) <= 1 {
+				break
+			}
+			pictures = append(pictures, filenametemp)
+		}
+
+		pic := strings.Join(pictures, ",")
+
+		author := req.FormValue("author")
+		if len(author) < 1 {
+		}
+		msg := req.FormValue("msg")
+		if len(msg) < 3 {
+		}
+
+		var ok bool
+		var client *redis.Client
+		client, ok = clients.Get()
+		if ok != true {
+			io.WriteString(w, "error!\n")
+		}
+
+		strID, _ := client.Get("globalID")
+		key := "weibo_" + strID
+		now := time.Now().Format("2006-01-02 15:04:05")
+		client.HMSet(key, "weiboid", strID, "msg", msg, "author", author, "creatime", now, "supports", 0, "resent", 0,
+			"pictures", pic, "comments", 0)
+		client.LPush("weibo_message", strID)
+		user := "user_" + author + "_weibo"
+		client.LPush(user, strID)
+		client.Incr("globalID")
+
+		fmt.Fprintf(w, "%s: %s", key, pic)
+
+		client.Close()
+	}
+}
 
 func commentHandle(w http.ResponseWriter, req *http.Request) {
 	author := req.FormValue("login_user")
@@ -654,6 +723,7 @@ func main() {
 	http.HandleFunc("/support", supportHandle)
 	http.HandleFunc("/checksupport", checksupportHandle)
 	http.HandleFunc("/write", writeHandle)
+	http.HandleFunc("/writev2", writev2Handle)
 	http.HandleFunc("/comment", commentHandle)
 	http.HandleFunc("/checkcomment", checkcommentHandle)
 	http.HandleFunc("/upload", uploadHandle)
