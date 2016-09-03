@@ -326,29 +326,33 @@ func cancelconcernHandle(w http.ResponseWriter, req *http.Request) {
 }
 
 func getWeibo(weiboid string, client *redis.Client) *WeiBo {
-	ls, err := client.HGetAll("weibo_" + weiboid)
+	if len(weiboid) <= 1 {
+		return nil
+	}
+	//	ls, err := client.HGetAll("weibo_" + weiboid)
+	ls, err := client.HMGet("weibo_"+weiboid, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin")
 	if err != nil {
 		return nil
 	}
 	var weibo WeiBo
 	for i, v := range ls {
 		switch i {
-		case 1:
+		case 0:
 			weibo.Weiboid, _ = strconv.Atoi(v)
-		case 3:
+		case 1:
 			weibo.Msg = v
-		case 5:
+		case 2:
 			weibo.Author = v
-		case 7:
+		case 3:
 			weibo.Creatime = v
-		case 9:
+		case 4:
 			weibo.Supports, _ = strconv.Atoi(v)
-		case 11:
+		case 5:
 			weibo.Resent, _ = strconv.Atoi(v)
-		case 13:
+		case 6:
 			temp := strings.Split(v, ",")
 			weibo.Pictures = append(weibo.Pictures, temp[:len(temp)]...)
-		case 15:
+		case 7:
 			weibo.Comments, _ = strconv.Atoi(v)
 		}
 	}
