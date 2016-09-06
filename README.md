@@ -11,6 +11,7 @@ http://192.168.1.251:8888/comment?login_user=2&weiboid=3&comment=%E6%A5%BC%E4%B8
 
 4 查询评论
 http://192.168.1.251:8888/checkcomment?weiboid=3
+`
 返回评论列表JSON
 [
     {
@@ -111,7 +112,7 @@ http://192.168.1.251:8888/checkcomment?weiboid=3
         },
         "Comment": "楼主儿傻逼"
     }
-]
+]`
 
 5 写微博
 http://192.168.1.251:8888/write?author=2&msg=%E4%BD%A0%E5%A5%BD%E6%88%91%E6%98%AF2%E5%8F%B7%E7%AC%A8%E8%9B%8B&pic=a.jpg,b.jpg
