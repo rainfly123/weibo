@@ -14,6 +14,10 @@ import (
 	"time"
 )
 
+type JsonResponse struct {
+	Code    int    `json:code`
+	Message string `json:message`
+}
 type WeiBo struct {
 	Weiboid  int      `json:"Weiboid"`
 	Msg      string   `json:"Msg"`
@@ -52,7 +56,7 @@ func (list ALL_WeiBO) Swap(i, j int) {
 }
 
 var logger *log.Logger
-var host = "127.0.0.1"
+var host = "192.168.1.251"
 var port = uint(6379)
 var clients redisPool
 
@@ -115,7 +119,7 @@ func receiveFile(w http.ResponseWriter, req *http.Request, name string) string {
 
 func writev2Handle(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "GET" {
-		io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action='writev2?author=%s&msg=%s' method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file0'/><br/><<input type=\"file\" name='file1'/><br/><label><input type=\"submit\" value=\"上传图片\"/></label></form></body></html>", req.FormValue("author"), req.FormValue("msg")))
+		io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action='writev2?author=%s&msg=%s' method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file0'/><br/><input type=\"file\" name='file1'/><br/><input type=\"file\" name='file2'/><br/><<input type=\"file\" name='file3'/><br/><<input type=\"file\" name='file4'/><br/><<input type=\"file\" name='file5'/><br/><<input type=\"file\" name='file6'/><br/><<input type=\"file\" name='file7'/><br/><<input type=\"file\" name='file8'/><br/><<label><input type=\"submit\" value=\"上传图片\"/></label></form></body></html>", req.FormValue("author"), req.FormValue("msg")))
 	} else {
 		var pictures []string
 		for i := 0; i < 9; i++ {
@@ -488,9 +492,11 @@ func profileHandle(w http.ResponseWriter, req *http.Request) {
 	gender := req.FormValue("gender")
 	location := req.FormValue("location")
 	signature := req.FormValue("signature")
+	jsonres := JsonResponse{1, "argument error"}
 
 	if len(login_user) < 1 || len(nickname) < 1 || len(gender) < 1 || len(location) < 1 || len(signature) < 1 {
-		io.WriteString(w, "error")
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
 		return
 	}
 
@@ -498,14 +504,16 @@ func profileHandle(w http.ResponseWriter, req *http.Request) {
 	var client *redis.Client
 	client, ok = clients.Get()
 	if ok != true {
-		io.WriteString(w, "error!\n")
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
 	}
 
 	portrait := "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg"
 	key := "user_" + login_user + "_profile"
 	client.HMSet(key, "nickname", nickname, "gender", gender, "location", location, "signature", signature, "portrait", portrait)
 
-	io.WriteString(w, "ok")
+	b, _ := json.Marshal(JsonResponse{0, "Succeeded"})
+	io.WriteString(w, string(b))
 	client.Close()
 }
 
@@ -708,6 +716,7 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+
 	logfile, _ := os.OpenFile("./weibo.log", os.O_RDWR|os.O_CREATE, 0)
 	logger = log.New(logfile, "\n", log.Ldate|log.Ltime|log.Lshortfile)
 
