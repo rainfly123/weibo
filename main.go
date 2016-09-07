@@ -244,7 +244,16 @@ func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 		all = append(all, comment)
 	}
 
-	b, _ := json.Marshal(all)
+	type MyResponse struct {
+		JsonResponse
+		Data []Comment `json:Data`
+	}
+	jsonres := MyResponse{}
+	jsonres.Code = 0
+	jsonres.Message = "Succeeded"
+	jsonres.Data = all
+
+	b, _ := json.Marshal(jsonres)
 	io.WriteString(w, string(b))
 	client.Close()
 }
@@ -307,7 +316,17 @@ func checksupportHandle(w http.ResponseWriter, req *http.Request) {
 		user := getUserinfo(v, client, false)
 		ALL_USERS = append(ALL_USERS, user)
 	}
-	b, _ := json.Marshal(ALL_USERS)
+
+	type MyResponse struct {
+		JsonResponse
+		Data []User `json:Data`
+	}
+	jsonres := MyResponse{}
+	jsonres.Code = 0
+	jsonres.Message = "Succeeded"
+	jsonres.Data = ALL_USERS
+
+	b, _ := json.Marshal(jsonres)
 	io.WriteString(w, string(b))
 	client.Close()
 }
@@ -717,7 +736,7 @@ func forwardHandle(w http.ResponseWriter, req *http.Request) {
 	author := req.FormValue("author")
 	msg := req.FormValue("msg")
 	origin := req.FormValue("origin")
-	if len(author) < 1 || len(msg) < 3 || len(origin) < 3 {
+	if len(author) < 1 || len(msg) < 3 || len(origin) < 1 {
 		jsonres := JsonResponse{1, "argument error"}
 		b, _ := json.Marshal(jsonres)
 		io.WriteString(w, string(b))
