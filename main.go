@@ -184,7 +184,7 @@ func commentHandle(w http.ResponseWriter, req *http.Request) {
 	comment := req.FormValue("comment")
 	weiboid := req.FormValue("weiboid")
 
-	if len(author) < 1 || len(comment) < 3 || len(weiboid) < 3 {
+	if len(author) < 1 || len(comment) < 3 || len(weiboid) < 1 {
 		jsonres := JsonResponse{1, "argument error"}
 		b, _ := json.Marshal(jsonres)
 		io.WriteString(w, string(b))
@@ -216,7 +216,7 @@ func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 	}
 
 	weiboid := req.FormValue("weiboid")
-	if len(weiboid) < 3 {
+	if len(weiboid) < 1 {
 		jsonres := JsonResponse{1, "argument error"}
 		b, _ := json.Marshal(jsonres)
 		io.WriteString(w, string(b))
@@ -252,7 +252,7 @@ func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 func supportHandle(w http.ResponseWriter, req *http.Request) {
 	author := req.FormValue("login_user")
 	weiboid := req.FormValue("weiboid")
-	if len(author) < 1 || len(weiboid) < 3 {
+	if len(author) < 1 || len(weiboid) < 1 {
 		jsonres := JsonResponse{1, "argument error"}
 		b, _ := json.Marshal(jsonres)
 		io.WriteString(w, string(b))
@@ -283,7 +283,7 @@ func supportHandle(w http.ResponseWriter, req *http.Request) {
 func checksupportHandle(w http.ResponseWriter, req *http.Request) {
 
 	weiboid := req.FormValue("weiboid")
-	if len(weiboid) < 3 {
+	if len(weiboid) < 1 {
 		jsonres := JsonResponse{1, "argument error"}
 		b, _ := json.Marshal(jsonres)
 		io.WriteString(w, string(b))
