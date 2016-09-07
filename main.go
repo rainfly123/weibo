@@ -181,13 +181,14 @@ func writev2Handle(w http.ResponseWriter, req *http.Request) {
 
 func commentHandle(w http.ResponseWriter, req *http.Request) {
 	author := req.FormValue("login_user")
-	if len(author) < 1 {
-	}
 	comment := req.FormValue("comment")
-	if len(comment) < 3 {
-	}
 	weiboid := req.FormValue("weiboid")
-	if len(weiboid) < 3 {
+
+	if len(author) < 1 || len(comment) < 3 || len(weiboid) < 3 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	var ok bool
@@ -202,8 +203,10 @@ func commentHandle(w http.ResponseWriter, req *http.Request) {
 	client.RPush(keyc, value)
 	keyv := "weibo_" + weiboid
 	client.HIncrBy(keyv, "comments", 1)
-	io.WriteString(w, "ok!\n")
 	client.Close()
+	jsonres := JsonResponse{0, "Succeeded"}
+	b, _ := json.Marshal(jsonres)
+	io.WriteString(w, string(b))
 }
 func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 
@@ -214,6 +217,10 @@ func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 
 	weiboid := req.FormValue("weiboid")
 	if len(weiboid) < 3 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	all := make([]Comment, 0, 1000)
@@ -221,7 +228,10 @@ func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 	var client *redis.Client
 	client, ok = clients.Get()
 	if ok != true {
-		io.WriteString(w, "error!\n")
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	key := "weibo_" + weiboid + "_comments"
@@ -241,17 +251,22 @@ func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 
 func supportHandle(w http.ResponseWriter, req *http.Request) {
 	author := req.FormValue("login_user")
-	if len(author) < 1 {
-	}
 	weiboid := req.FormValue("weiboid")
-	if len(weiboid) < 3 {
+	if len(author) < 1 || len(weiboid) < 3 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	var ok bool
 	var client *redis.Client
 	client, ok = clients.Get()
 	if ok != true {
-		io.WriteString(w, "error!\n")
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	keys := "weibo_" + weiboid + "_supports"
@@ -259,20 +274,30 @@ func supportHandle(w http.ResponseWriter, req *http.Request) {
 
 	keyv := "weibo_" + weiboid
 	client.HIncrBy(keyv, "supports", 1)
-	io.WriteString(w, "ok!\n")
 	client.Close()
+
+	jsonres := JsonResponse{0, "Succeeded"}
+	b, _ := json.Marshal(jsonres)
+	io.WriteString(w, string(b))
 }
 func checksupportHandle(w http.ResponseWriter, req *http.Request) {
 
 	weiboid := req.FormValue("weiboid")
 	if len(weiboid) < 3 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	var ok bool
 	var client *redis.Client
 	client, ok = clients.Get()
 	if ok != true {
-		io.WriteString(w, "error!\n")
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	key := "weibo_" + weiboid + "_supports"
@@ -289,17 +314,22 @@ func checksupportHandle(w http.ResponseWriter, req *http.Request) {
 
 func concernHandle(w http.ResponseWriter, req *http.Request) {
 	login_user := req.FormValue("login_user")
-	if len(login_user) < 1 {
-	}
 	concern := req.FormValue("concern")
-	if len(concern) < 1 {
+	if len(login_user) < 1 || len(concern) < 1 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	var ok bool
 	var client *redis.Client
 	client, ok = clients.Get()
 	if ok != true {
-		io.WriteString(w, "error!\n")
+		jsonres := JsonResponse{2, "sytem error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	key := "user_" + login_user + "_following"
@@ -307,25 +337,31 @@ func concernHandle(w http.ResponseWriter, req *http.Request) {
 
 	key = "user_" + concern + "_follower"
 	client.SAdd(key, login_user)
-
-	io.WriteString(w, "ok!\n")
-
 	client.Close()
+
+	jsonres := JsonResponse{0, "Succeeded"}
+	b, _ := json.Marshal(jsonres)
+	io.WriteString(w, string(b))
 }
 
 func cancelconcernHandle(w http.ResponseWriter, req *http.Request) {
 	login_user := req.FormValue("login_user")
-	if len(login_user) < 1 {
-	}
 	cancel := req.FormValue("cancel")
-	if len(cancel) < 1 {
+	if len(login_user) < 1 || len(cancel) < 1 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	var ok bool
 	var client *redis.Client
 	client, ok = clients.Get()
 	if ok != true {
-		io.WriteString(w, "error!\n")
+		jsonres := JsonResponse{2, "sytem error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	key := "user_" + login_user + "_following"
@@ -340,9 +376,10 @@ func cancelconcernHandle(w http.ResponseWriter, req *http.Request) {
 		io.WriteString(w, "error!\n")
 	}
 
-	io.WriteString(w, "ok!\n")
-
 	client.Close()
+	jsonres := JsonResponse{0, "Succeeded"}
+	b, _ := json.Marshal(jsonres)
+	io.WriteString(w, string(b))
 }
 
 func getWeibo(weiboid string, client *redis.Client) *WeiBo {
@@ -383,13 +420,20 @@ func getWeibo(weiboid string, client *redis.Client) *WeiBo {
 func checkHandle(w http.ResponseWriter, req *http.Request) {
 	login_user := req.FormValue("login_user")
 	if len(login_user) < 1 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	var ok bool
 	var client *redis.Client
 	client, ok = clients.Get()
 	if ok != true {
-		io.WriteString(w, "error!\n")
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	all := make([]string, 0, 200)
@@ -440,7 +484,17 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 		allweibo = append(allweibo, weibo)
 	}
 	sort.Sort(allweibo)
-	b, _ := json.Marshal(allweibo)
+
+	type MyResponse struct {
+		JsonResponse
+		Data ALL_WeiBO `json:Data`
+	}
+	jsonres := MyResponse{}
+	jsonres.Code = 0
+	jsonres.Message = "Succeeded"
+	jsonres.Data = allweibo
+
+	b, _ := json.Marshal(jsonres)
 	io.WriteString(w, string(b))
 	client.Close()
 }
@@ -448,6 +502,10 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 	login_user := req.FormValue("login_user")
 	if len(login_user) < 1 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 	key := "user_" + login_user + "_weibo"
 
@@ -455,7 +513,10 @@ func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 	var client *redis.Client
 	client, ok = clients.Get()
 	if ok != true {
-		io.WriteString(w, "error!\n")
+		jsonres := JsonResponse{2, "sytem error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	weibos, _ := client.LRange(key, 0, -1)
@@ -497,7 +558,17 @@ func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 		allweibo = append(allweibo, weibo)
 	}
 	//sort.Sort(allweibo)
-	b, _ := json.Marshal(allweibo)
+
+	type MyResponse struct {
+		JsonResponse
+		Data ALL_WeiBO `json:Data`
+	}
+	jsonres := MyResponse{}
+	jsonres.Code = 0
+	jsonres.Message = "Succeeded"
+	jsonres.Data = allweibo
+	b, _ := json.Marshal(jsonres)
+
 	io.WriteString(w, string(b))
 	client.Close()
 }
@@ -621,7 +692,9 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 	userid := req.FormValue("userid")
 
 	if len(userid) < 1 {
-		io.WriteString(w, "error")
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
 		return
 	}
 
@@ -629,7 +702,10 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 	var client *redis.Client
 	client, ok = clients.Get()
 	if ok != true {
-		io.WriteString(w, "error!\n")
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	b, _ := json.Marshal(getUserinfo(userid, client, true))
@@ -639,20 +715,23 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 
 func forwardHandle(w http.ResponseWriter, req *http.Request) {
 	author := req.FormValue("author")
-	if len(author) < 1 {
-	}
 	msg := req.FormValue("msg")
-	if len(msg) < 3 {
-	}
 	origin := req.FormValue("origin")
-	if len(origin) < 3 {
+	if len(author) < 1 || len(msg) < 3 || len(origin) < 3 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	var ok bool
 	var client *redis.Client
 	client, ok = clients.Get()
 	if ok != true {
-		io.WriteString(w, "error!\n")
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	strID, _ := client.Get("globalID")
@@ -665,24 +744,31 @@ func forwardHandle(w http.ResponseWriter, req *http.Request) {
 	client.LPush(user, strID)
 	client.Incr("globalID")
 
-	fmt.Fprintf(w, "%s", key)
-	io.WriteString(w, "ok!\n")
-
 	keyv := "weibo_" + origin
 	client.HIncrBy(keyv, "resent", 1)
 
 	client.Close()
+
+	b, _ := json.Marshal(JsonResponse{0, "Succeeded"})
+	io.WriteString(w, string(b))
 }
 func squareHandle(w http.ResponseWriter, req *http.Request) {
 	author := req.FormValue("login_user")
 	if len(author) < 1 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	var ok bool
 	var client *redis.Client
 	client, ok = clients.Get()
 	if ok != true {
-		io.WriteString(w, "error!\n")
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	client.SAdd("all_users", author) //new user inter weibo system
@@ -725,7 +811,16 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 		allweibo = append(allweibo, weibo)
 	}
 	//sort.Sort(allweibo)
-	b, _ := json.Marshal(allweibo)
+	type MyResponse struct {
+		JsonResponse
+		Data ALL_WeiBO `json:Data`
+	}
+	jsonres := MyResponse{}
+	jsonres.Code = 0
+	jsonres.Message = "Succeeded"
+	jsonres.Data = allweibo
+
+	b, _ := json.Marshal(jsonres)
 	io.WriteString(w, string(b))
 
 	client.Close()
