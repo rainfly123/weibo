@@ -727,9 +727,18 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	b, _ := json.Marshal(getUserinfo(userid, client, true))
-	io.WriteString(w, string(b))
+	type MyResponse struct {
+		JsonResponse
+		Data User `json:Data`
+	}
+	jsonres := MyResponse{}
+	jsonres.Code = 0
+	jsonres.Message = "Succeeded"
+	jsonres.Data = getUserinfo(userid, client, true)
 	client.Close()
+
+	b, _ := json.Marshal(jsonres)
+	io.WriteString(w, string(b))
 }
 
 func forwardHandle(w http.ResponseWriter, req *http.Request) {
