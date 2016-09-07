@@ -15,8 +15,8 @@ import (
 )
 
 type JsonResponse struct {
-	Code    int    `json:code`
-	Message string `json:message`
+	Code    int    `json:Code`
+	Message string `json:Message`
 }
 type WeiBo struct {
 	Weiboid  int      `json:"Weiboid"`
@@ -134,17 +134,22 @@ func writev2Handle(w http.ResponseWriter, req *http.Request) {
 		pic := strings.Join(pictures, ",")
 
 		author := req.FormValue("author")
-		if len(author) < 1 {
-		}
 		msg := req.FormValue("msg")
-		if len(msg) < 3 {
+		if len(author) < 1 || len(msg) < 3 {
+			jsonres := JsonResponse{1, "argument error"}
+			b, _ := json.Marshal(jsonres)
+			io.WriteString(w, string(b))
+			return
 		}
 
 		var ok bool
 		var client *redis.Client
 		client, ok = clients.Get()
 		if ok != true {
-			io.WriteString(w, "error!\n")
+			jsonres := JsonResponse{2, "system error"}
+			b, _ := json.Marshal(jsonres)
+			io.WriteString(w, string(b))
+			return
 		}
 
 		strID, _ := client.Get("globalID")
@@ -157,7 +162,18 @@ func writev2Handle(w http.ResponseWriter, req *http.Request) {
 		client.LPush(user, strID)
 		client.Incr("globalID")
 
-		fmt.Fprintf(w, "%s: %s", key, pic)
+		type MyResponse struct {
+			JsonResponse
+			Weiboid  string `json:Weiboid`
+			Pictures string `json:Pictures`
+		}
+		jsonres := MyResponse{}
+		jsonres.Code = 0
+		jsonres.Message = "Succeeded"
+		jsonres.Weiboid = strID
+		jsonres.Pictures = pic
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
 
 		client.Close()
 	}
