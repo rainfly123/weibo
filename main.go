@@ -195,7 +195,10 @@ func commentHandle(w http.ResponseWriter, req *http.Request) {
 	var client *redis.Client
 	client, ok = clients.Get()
 	if ok != true {
-		io.WriteString(w, "error!\n")
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
 	}
 
 	keyc := "weibo_" + weiboid + "_comments"
@@ -374,6 +377,7 @@ func cancelconcernHandle(w http.ResponseWriter, req *http.Request) {
 	}
 
 	var ok bool
+	var result bool
 	var client *redis.Client
 	client, ok = clients.Get()
 	if ok != true {
@@ -385,17 +389,18 @@ func cancelconcernHandle(w http.ResponseWriter, req *http.Request) {
 
 	key := "user_" + login_user + "_following"
 	is, _ := client.SMove(key, "__trash__", cancel)
-	if is != true {
-		io.WriteString(w, "error!\n")
-	}
+	result = is
 
 	key = "user_" + cancel + "_follower"
 	im, _ := client.SMove(key, "__trash__", login_user)
-	if im != true {
-		io.WriteString(w, "error!\n")
-	}
-
+	result = result && im
 	client.Close()
+	if result != true {
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
+	}
 	jsonres := JsonResponse{0, "Succeeded"}
 	b, _ := json.Marshal(jsonres)
 	io.WriteString(w, string(b))
@@ -612,11 +617,12 @@ func profileHandle(w http.ResponseWriter, req *http.Request) {
 	if ok != true {
 		b, _ := json.Marshal(jsonres)
 		io.WriteString(w, string(b))
+		return
 	}
 
-	portrait := "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg"
+	//	portrait := "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg"
 	key := "user_" + login_user + "_profile"
-	client.HMSet(key, "nickname", nickname, "gender", gender, "location", location, "signature", signature, "portrait", portrait)
+	client.HMSet(key, "nickname", nickname, "gender", gender, "location", location, "signature", signature) //, "portrait", portrait)
 
 	b, _ := json.Marshal(JsonResponse{0, "Succeeded"})
 	io.WriteString(w, string(b))
@@ -642,22 +648,25 @@ func getUserinfo(userid string, client *redis.Client, detail bool) User {
 
 	var user User
 	key := "user_" + userid + "_profile"
-	ls, err := client.HGetAll(key)
+	ls, err := client.HMGet(key, "nickname", "gender", "location", "signature", "portrait")
 	if err != nil {
 		return user
 	}
 	user.Userid = userid
 	for i, v := range ls {
 		switch i {
-		case 1:
+		case 0:
 			user.Nickname = v
-		case 3:
+		case 1:
 			user.Gender = v
-		case 5:
+		case 2:
 			user.Location = v
-		case 7:
+		case 3:
 			user.Signature = v
-		case 9:
+		case 4:
+			if v == "" {
+				v = "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg"
+			}
 			user.Portrait = v
 		}
 	}
