@@ -4,7 +4,81 @@ http://192.168.1.251:8888/support?login_user=2&weiboid=3
 
 **2 查询点赞**
 http://192.168.1.251:8888/checksupport?&weiboid=3
-返回点赞者列表JSON["1","1","1","1","1","1","1","1","1","2"]
+返回点赞者列表JSON
+```
+{
+    "code": 0,
+    "message": "Succeeded",
+    "data": [
+        {
+            "userid": "2",
+            "nickname": "女神就是我",
+            "gender": "女人",
+            "location": "广州啊",
+            "signature": "爱花城",
+            "portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
+            "follower": null,
+            "following": null,
+            "recommend": null
+        },
+        {
+            "userid": "1",
+            "nickname": "长城长",
+            "gender": "男",
+            "location": "北京",
+            "signature": "万里长城永不倒",
+            "portrait": "http://192.168.1.251:8888/44f4c56e25508cfa2909918e599a590b.jpg",
+            "follower": null,
+            "following": null,
+            "recommend": null
+        },
+        {
+            "userid": "2",
+            "nickname": "女神就是我",
+            "gender": "女人",
+            "location": "广州啊",
+            "signature": "爱花城",
+            "portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
+            "follower": null,
+            "following": null,
+            "recommend": null
+        },
+        {
+            "userid": "2",
+            "nickname": "女神就是我",
+            "gender": "女人",
+            "location": "广州啊",
+            "signature": "爱花城",
+            "portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
+            "follower": null,
+            "following": null,
+            "recommend": null
+        },
+        {
+            "userid": "4",
+            "nickname": "山炮",
+            "gender": "女",
+            "location": "沈阳",
+            "signature": "爱东北城",
+            "portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
+            "follower": null,
+            "following": null,
+            "recommend": null
+        },
+        {
+            "userid": "2",
+            "nickname": "女神就是我",
+            "gender": "女人",
+            "location": "广州啊",
+            "signature": "爱花城",
+            "portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
+            "follower": null,
+            "following": null,
+            "recommend": null
+        }
+    ]
+}
+```
 
 **3 评论**
 http://192.168.1.251:8888/comment?login_user=2&weiboid=3&comment=%E6%A5%BC%E4%B8%BB%E5%84%BF%E5%82%BB%E9%80%BC
