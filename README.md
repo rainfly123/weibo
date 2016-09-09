@@ -1,19 +1,19 @@
-weibo
-1 点赞
+# Weibo API Summary
+**1 点赞**
 http://192.168.1.251:8888/support?login_user=2&weiboid=3
 
-2 查询点赞
+**2 查询点赞**
 http://192.168.1.251:8888/checksupport?&weiboid=3
 返回点赞者列表JSON["1","1","1","1","1","1","1","1","1","2"]
 
-3 评论
+**3 评论**
 http://192.168.1.251:8888/comment?login_user=2&weiboid=3&comment=%E6%A5%BC%E4%B8%BB%E5%84%BF%E5%82%BB%E9%80%BC
 
-4 查询评论
+**4 查询评论**
 http://192.168.1.251:8888/checkcomment?weiboid=3
 `
 返回评论列表JSON																	
-{
+`{
     "Code: 0,
     "Message": "Succeeded" 
     "Data": 
@@ -74,47 +74,67 @@ http://192.168.1.251:8888/checkcomment?weiboid=3
         "Comment": "“地方的”"
     },
     ]
-}`
-
-5 写微博
+}``
+**5 写微博**
 http://192.168.1.251:8888/write?author=2&msg=%E4%BD%A0%E5%A5%BD%E6%88%91%E6%98%AF2%E5%8F%B7%E7%AC%A8%E8%9B%8B&pic=a.jpg,b.jpg
-5.1 写微博
+**5.1 写微博**
 http://192.168.1.251:8888/writev2?
 author=2&msg=%E4%BD%A0%E5%A5%BD%E6%88%91%E6%98%AF2%E5%8F%B7%E7%AC%A8%E8%9B%8B
 Multipart-Form   file0,file1....
 
 
-6 关注
+**6 关注**
 http://192.168.1.251:8888/concern?login_user=1&concern=2
 用户1，关注用户2，成为其粉丝
 
-7 取消关注
+**7 取消关注**
 http://192.168.1.251:8888/cancelconcern?login_user=1&cancel=2
 用户1，取消关注用户2，不在是其粉丝
 
-8 查询自己的微博
+**8 查询自己的微博**
 http://192.168.1.251:8888/checkmy?login_user=1
 返回列表JSON["Code":0, "Message":"Succeeded","Data":{"Weiboid":2,"Msg":"你好我是1号","Author":"1","Creatime":"2016-08-18 13:04:21","Supports":0,"Resent":0,"Pictures":["a.jpg","b.jpg"],"Comments":0},
 {"Weiboid":1,"Msg":"你好","Author":"1","Creatime":"2016-08-18 13:04:07","Supports":0,"Resent":0,"Pictures":["a.jpg","b.jpg"],"Comments":0}]
 
-9 查询自己关注的人的微博
+**9 查询自己关注的人的微博**
 http://192.168.1.251:8888/check?login_user=1
 返回自己关注的人的最新微博
-[{"Weiboid":5,"Msg":"你好我是2号笨蛋","Author":"2","Creatime":"2016-08-18 14:23:46","Supports":0,"Resent":0,"Pictures":["a.jpg","b.jpg"],"Comments":0},
-{"Weiboid":4,"Msg":"你好我是2号笨蛋","Author":"2","Creatime":"2016-08-18 13:04:41","Supports":0,"Resent":0,"Pictures":["a.jpg","b.jpg"],"Comments":0},
-{"Weiboid":3,"Msg":"你好我是2号","Author":"2","Creatime":"2016-08-18 13:04:31","Supports":10,"Resent":0,"Pictures":["a.jpg","b.jpg"],"Comments":4}]
+`[{"Weiboid":5,
+"Msg":"你好我是2号笨蛋",
+"Author":"2",
+"Creatime":"2016-08-18 14:23:46",
+"Supports":0,
+"Resent":0,
+"Pictures":["a.jpg","b.jpg"],
+"Comments":0},
+{"Weiboid":4,
+"Msg":"你好我是2号笨蛋",
+"Author":"2",
+"Creatime":"2016-08-18 13:04:41",
+"Supports":0,
+"Resent":0,
+"Pictures":["a.jpg","b.jpg"],
+"Comments":0},
+{"Weiboid":3,
+"Msg":"你好我是2号",
+"Author":"2",
+"Creatime":"2016-08-18 13:04:31",
+"Supports":10,
+"Resent":0,
+"Pictures":["a.jpg","b.jpg"],
+"Comments":4}]`
 
-10 更新用户资料
+**10 更新用户资料**
 http://192.168.1.251:8888/profile?login_user=xx&nickname=xxx&gender=xx&location=xx&signature=xxx
 
-11 更新头像
+**11 更新头像**
 http://192.168.1.251:8888/portrait?login_user=xxx    FORM multi-part 传输 ,name=file
-13 转发微博
+**12 转发微博**
 http://192.168.1.251:8888/forwared?login_user=xxx&msg=你好&origin=xxx  （origin原微博ID）
 
-12 查询用户信息
+**13 查询用户信息**
 http://192.168.1.251:8888/userinfo?userid=3  含推荐
-返回用户信息
+`返回用户信息
 {
     "Code: 0,
     "Message": "Succeeded" 
@@ -187,12 +207,12 @@ http://192.168.1.251:8888/userinfo?userid=3  含推荐
         }
     ]
    }
-}
+}`
 
-13 查询广场
+**14 查询广场**
 http://192.168.1.251:8888/square?login_user=xx
 返回：
-{
+`{
     "Code: 0,
     "Message": "Succeeded" 
     "Data": 
@@ -294,3 +314,4 @@ http://192.168.1.251:8888/square?login_user=xx
     },
    
 ]}
+`
