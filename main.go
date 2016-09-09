@@ -246,7 +246,7 @@ func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 
 	type MyResponse struct {
 		JsonResponse
-		Data []Comment `json:data`
+		Data []Comment `json:"data"`
 	}
 	jsonres := MyResponse{}
 	jsonres.Code = 0
@@ -319,7 +319,7 @@ func checksupportHandle(w http.ResponseWriter, req *http.Request) {
 
 	type MyResponse struct {
 		JsonResponse
-		Data []User `json:data`
+		Data []User `json:"data"`
 	}
 	jsonres := MyResponse{}
 	jsonres.Code = 0
@@ -506,7 +506,7 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 
 	type MyResponse struct {
 		JsonResponse
-		Data ALL_WeiBO `json:data`
+		Data ALL_WeiBO `json:"data"`
 	}
 	jsonres := MyResponse{}
 	jsonres.Code = 0
@@ -580,7 +580,7 @@ func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 
 	type MyResponse struct {
 		JsonResponse
-		Data ALL_WeiBO `json:data`
+		Data ALL_WeiBO `json:"data"`
 	}
 	jsonres := MyResponse{}
 	jsonres.Code = 0
@@ -729,7 +729,7 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 
 	type MyResponse struct {
 		JsonResponse
-		Data User `json:data`
+		Data User `json:"data"`
 	}
 	jsonres := MyResponse{}
 	jsonres.Code = 0
@@ -841,7 +841,7 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 	//sort.Sort(allweibo)
 	type MyResponse struct {
 		JsonResponse
-		Data ALL_WeiBO `json:data`
+		Data ALL_WeiBO `json:"data"`
 	}
 	jsonres := MyResponse{}
 	jsonres.Code = 0
