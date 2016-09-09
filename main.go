@@ -15,32 +15,32 @@ import (
 )
 
 type JsonResponse struct {
-	Code    int    `json:Code`
-	Message string `json:Message`
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 }
 type WeiBo struct {
-	Weiboid  int      `json:"Weiboid"`
-	Msg      string   `json:"Msg"`
-	Author   string   `json:"Author"`
-	Creatime string   `json:"Creatime"`
-	Supports int      `json:Supports`
-	Resent   int      `json:Resent`
-	Pictures []string `json:Pictures`
-	Comments int      `json:Comments`
-	Origin   *WeiBo   `json:Origin`
-	Userinfo User     `json:User`
+	Weiboid  int      `json:"weiboid"`
+	Msg      string   `json:"msg"`
+	Author   string   `json:"author"`
+	Creatime string   `json:"creatime"`
+	Supports int      `json:"supports"`
+	Resent   int      `json:"resent"`
+	Pictures []string `json:"pictures"`
+	Comments int      `json:"comments"`
+	Origin   *WeiBo   `json:"origin"`
+	Userinfo User     `json:"user"`
 }
 
 type User struct {
-	Userid    string `json:"Userid"`
+	Userid    string `json:"userid"`
 	Nickname  string `json:"nickname"`
-	Gender    string `json:"Gender"`
-	Location  string `json:"Location"`
-	Signature string `json:"Signature"`
-	Portrait  string `json:Portrait`
-	Follower  []User `json:Follower`
-	Following []User `json:Following`
-	Recommend []User `json:Recommend`
+	Gender    string `json:"gender"`
+	Location  string `json:"location"`
+	Signature string `json:"signature"`
+	Portrait  string `json:"portrait"`
+	Follower  []User `json:"follower"`
+	Following []User `json:"following"`
+	Recommend []User `json:"recommend"`
 }
 
 type ALL_WeiBO []WeiBo
