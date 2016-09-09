@@ -13,7 +13,8 @@ http://192.168.1.251:8888/comment?login_user=2&weiboid=3&comment=%E6%A5%BC%E4%B8
 http://192.168.1.251:8888/checkcomment?weiboid=3
 `
 返回评论列表JSON																	
-`{
+```
+{
     "Code: 0,
     "Message": "Succeeded" 
     "Data": 
@@ -74,7 +75,8 @@ http://192.168.1.251:8888/checkcomment?weiboid=3
         "Comment": "“地方的”"
     },
     ]
-}``
+}
+```
 **5 写微博**
 http://192.168.1.251:8888/write?author=2&msg=%E4%BD%A0%E5%A5%BD%E6%88%91%E6%98%AF2%E5%8F%B7%E7%AC%A8%E8%9B%8B&pic=a.jpg,b.jpg
 **5.1 写微博**
@@ -93,13 +95,33 @@ http://192.168.1.251:8888/cancelconcern?login_user=1&cancel=2
 
 **8 查询自己的微博**
 http://192.168.1.251:8888/checkmy?login_user=1
-返回列表JSON["Code":0, "Message":"Succeeded","Data":{"Weiboid":2,"Msg":"你好我是1号","Author":"1","Creatime":"2016-08-18 13:04:21","Supports":0,"Resent":0,"Pictures":["a.jpg","b.jpg"],"Comments":0},
-{"Weiboid":1,"Msg":"你好","Author":"1","Creatime":"2016-08-18 13:04:07","Supports":0,"Resent":0,"Pictures":["a.jpg","b.jpg"],"Comments":0}]
+返回列表JSON
+```
+["Code":0,
+"Message":"Succeeded",
+"Data":{"Weiboid":2,
+"Msg":"你好我是1号",
+"Author":"1",
+"Creatime":"2016-08-18 13:04:21",
+"Supports":0,
+"Resent":0,
+"Pictures":["a.jpg","b.jpg"],
+"Comments":0},
+{"Weiboid":1,
+"Msg":"你好",
+"Author":"1",
+"Creatime":"2016-08-18 13:04:07",
+"Supports":0,
+"Resent":0,
+"Pictures":["a.jpg","b.jpg"],
+"Comments":0}]
+```
 
 **9 查询自己关注的人的微博**
 http://192.168.1.251:8888/check?login_user=1
+
 返回自己关注的人的最新微博
-`[{"Weiboid":5,
+```[{"Weiboid":5,
 "Msg":"你好我是2号笨蛋",
 "Author":"2",
 "Creatime":"2016-08-18 14:23:46",
@@ -122,7 +144,8 @@ http://192.168.1.251:8888/check?login_user=1
 "Supports":10,
 "Resent":0,
 "Pictures":["a.jpg","b.jpg"],
-"Comments":4}]`
+"Comments":4}]
+```
 
 **10 更新用户资料**
 http://192.168.1.251:8888/profile?login_user=xx&nickname=xxx&gender=xx&location=xx&signature=xxx
@@ -134,7 +157,8 @@ http://192.168.1.251:8888/forwared?login_user=xxx&msg=你好&origin=xxx  （orig
 
 **13 查询用户信息**
 http://192.168.1.251:8888/userinfo?userid=3  含推荐
-`返回用户信息
+```
+返回用户信息
 {
     "Code: 0,
     "Message": "Succeeded" 
@@ -207,12 +231,14 @@ http://192.168.1.251:8888/userinfo?userid=3  含推荐
         }
     ]
    }
-}`
+}
+```
 
 **14 查询广场**
 http://192.168.1.251:8888/square?login_user=xx
 返回：
-`{
+```
+{
     "Code: 0,
     "Message": "Succeeded" 
     "Data": 
@@ -314,7 +340,4 @@ http://192.168.1.251:8888/square?login_user=xx
     },
    
 ]}
-`
-
-
-
+```
