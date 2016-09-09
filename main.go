@@ -164,8 +164,8 @@ func writev2Handle(w http.ResponseWriter, req *http.Request) {
 
 		type MyResponse struct {
 			JsonResponse
-			Weiboid  string `json:Weiboid`
-			Pictures string `json:Pictures`
+			Weiboid  string `json:"weiboid"`
+			Pictures string `json:"pictures"`
 		}
 		jsonres := MyResponse{}
 		jsonres.Code = 0
@@ -211,8 +211,8 @@ func commentHandle(w http.ResponseWriter, req *http.Request) {
 func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 
 	type Comment struct {
-		Author  User   `json:Author`
-		Comment string `json:Comment`
+		Author  User   `json:"author"`
+		Comment string `json:"comment"`
 	}
 
 	weiboid := req.FormValue("weiboid")
