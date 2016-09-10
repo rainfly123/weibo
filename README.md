@@ -171,54 +171,122 @@ http://192.168.1.251:8888/cancelconcern?login_user=1&cancel=2
 http://192.168.1.251:8888/checkmy?login_user=1
 返回列表JSON
 ```
-["Code":0,
-"Message":"Succeeded",
-"Data":{"Weiboid":2,
-"Msg":"你好我是1号",
-"Author":"1",
-"Creatime":"2016-08-18 13:04:21",
-"Supports":0,
-"Resent":0,
-"Pictures":["a.jpg","b.jpg"],
-"Comments":0},
-{"Weiboid":1,
-"Msg":"你好",
-"Author":"1",
-"Creatime":"2016-08-18 13:04:07",
-"Supports":0,
-"Resent":0,
-"Pictures":["a.jpg","b.jpg"],
-"Comments":0}]
+{
+    "code": 0,
+    "message": "Succeeded",
+    "data": [
+        {
+            "weiboid": 15,
+            "msg": "你好",
+            "author": "1",
+            "creatime": "2016-09-10 13:38:40",
+            "supports": 0,
+            "resent": 0,
+            "pictures": [
+                "a.jpg",
+                "b.jpg"
+            ],
+            "comments": 0,
+            "origin": null,
+            "user": {
+                "userid": "1",
+                "nickname": "长城长",
+                "gender": "男",
+                "location": "北京",
+                "signature": "万里长城永不倒",
+                "portrait": "http://192.168.1.251:8888/44f4c56e25508cfa2909918e599a590b.jpg",
+                "follower": null,
+                "following": null,
+                "recommend": null
+            }
+        },
+        {
+            "weiboid": 10,
+            "msg": "我是1号作者我要写文波",
+            "author": "1",
+            "creatime": "2016-09-07 17:17:39",
+            "supports": 0,
+            "resent": 1,
+            "pictures": [
+                "http://192.168.1.251:8888/18856e189b82d9c5d00421c498f7ce61.jpg"
+            ],
+            "comments": 0,
+            "origin": null,
+            "user": {
+                "userid": "1",
+                "nickname": "长城长",
+                "gender": "男",
+                "location": "北京",
+                "signature": "万里长城永不倒",
+                "portrait": "http://192.168.1.251:8888/44f4c56e25508cfa2909918e599a590b.jpg",
+                "follower": null,
+                "following": null,
+                "recommend": null
+            }
+        },
+        ]
+     }
 ```
 
 **9 查询自己关注的人的微博**
 http://192.168.1.251:8888/check?login_user=1
 
 返回自己关注的人的最新微博
-```[{"Weiboid":5,
-"Msg":"你好我是2号笨蛋",
-"Author":"2",
-"Creatime":"2016-08-18 14:23:46",
-"Supports":0,
-"Resent":0,
-"Pictures":["a.jpg","b.jpg"],
-"Comments":0},
-{"Weiboid":4,
-"Msg":"你好我是2号笨蛋",
-"Author":"2",
-"Creatime":"2016-08-18 13:04:41",
-"Supports":0,
-"Resent":0,
-"Pictures":["a.jpg","b.jpg"],
-"Comments":0},
-{"Weiboid":3,
-"Msg":"你好我是2号",
-"Author":"2",
-"Creatime":"2016-08-18 13:04:31",
-"Supports":10,
-"Resent":0,
-"Pictures":["a.jpg","b.jpg"],
-"Comments":4}]
+```{
+    "code": 0,
+    "message": "Succeeded",
+    "data": [
+        {
+            "weiboid": 15,
+            "msg": "你好",
+            "author": "1",
+            "creatime": "2016-09-10 13:38:40",
+            "supports": 0,
+            "resent": 0,
+            "pictures": [
+                "a.jpg",
+                "b.jpg"
+            ],
+            "comments": 0,
+            "origin": null,
+            "user": {
+                "userid": "1",
+                "nickname": "长城长",
+                "gender": "男",
+                "location": "北京",
+                "signature": "万里长城永不倒",
+                "portrait": "http://192.168.1.251:8888/44f4c56e25508cfa2909918e599a590b.jpg",
+                "follower": null,
+                "following": null,
+                "recommend": null
+            }
+        },
+        {
+            "weiboid": 10,
+            "msg": "我是1号作者我要写文波",
+            "author": "1",
+            "creatime": "2016-09-07 17:17:39",
+            "supports": 0,
+            "resent": 1,
+            "pictures": [
+                "http://192.168.1.251:8888/18856e189b82d9c5d00421c498f7ce61.jpg"
+            ],
+            "comments": 0,
+            "origin": null,
+            "user": {
+                "userid": "1",
+                "nickname": "长城长",
+                "gender": "男",
+                "location": "北京",
+                "signature": "万里长城永不倒",
+                "portrait": "http://192.168.1.251:8888/44f4c56e25508cfa2909918e599a590b.jpg",
+                "follower": null,
+                "following": null,
+                "recommend": null
+            }
+        },
+        ]
+      }
 ```
 
 **10 更新用户资料**
