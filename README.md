@@ -232,6 +232,7 @@ http://192.168.1.251:8888/checkmy?login_user=1
 http://192.168.1.251:8888/check?login_user=1
 
 返回自己关注的人的最新微博
+
 ```
    {
     "code": 0,
