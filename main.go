@@ -605,7 +605,8 @@ func profileHandle(w http.ResponseWriter, req *http.Request) {
 	signature := req.FormValue("signature")
 	jsonres := JsonResponse{1, "argument error"}
 
-	if len(login_user) < 1 || len(nickname) < 1 || len(gender) < 1 || len(location) < 1 || len(signature) < 1 {
+	if len(login_user) < 1 {
+		//if len(login_user) < 1 || len(nickname) < 1 || len(gender) < 1 || len(location) < 1 || len(signature) < 1 {
 		b, _ := json.Marshal(jsonres)
 		io.WriteString(w, string(b))
 		return
