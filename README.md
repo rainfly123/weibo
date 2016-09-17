@@ -156,7 +156,7 @@ http://192.168.1.251:8888/write?author=2&msg=%E4%BD%A0%E5%A5%BD%E6%88%91%E6%98%A
 **5.1 写微博**
 http://192.168.1.251:8888/writev2?
 author=2&msg=%E4%BD%A0%E5%A5%BD%E6%88%91%E6%98%AF2%E5%8F%B7%E7%AC%A8%E8%9B%8B
-Multipart-Form   file0,file1....
+Multipart-Form   name="file0",name="file1"....name="file8"
 
 
 **6 关注**
@@ -295,7 +295,8 @@ http://192.168.1.251:8888/check?login_user=1
 http://192.168.1.251:8888/profile?login_user=xx&nickname=xxx&gender=xx&location=xx&signature=xxx
 
 **11 更新头像**
-http://192.168.1.251:8888/portrait?login_user=xxx    FORM multi-part 传输 ,name=file
+http://192.168.1.251:8888/portrait?login_user=xxx    FORM multi-part 传输 ,name="file"
+
 **12 转发微博**
 http://192.168.1.251:8888/forwared?login_user=xxx&msg=你好&origin=xxx  （origin原微博ID）
 
