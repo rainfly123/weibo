@@ -431,8 +431,10 @@ func getWeibo(weiboid string, client *redis.Client) *WeiBo {
 		case 5:
 			weibo.Resent, _ = strconv.Atoi(v)
 		case 6:
-			temp := strings.Split(v, ",")
-			weibo.Pictures = append(weibo.Pictures, temp[:len(temp)]...)
+			if len(v) >= 3 {
+				temp := strings.Split(v, ",")
+				weibo.Pictures = append(weibo.Pictures, temp[:len(temp)]...)
+			}
 		case 7:
 			weibo.Comments, _ = strconv.Atoi(v)
 		}
@@ -496,8 +498,10 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 			case 5:
 				weibo.Resent, _ = strconv.Atoi(v)
 			case 6:
-				temp := strings.Split(v, ",")
-				weibo.Pictures = append(weibo.Pictures, temp[:len(temp)]...)
+				if len(v) >= 3 {
+					temp := strings.Split(v, ",")
+					weibo.Pictures = append(weibo.Pictures, temp[:len(temp)]...)
+				}
 			case 7:
 				weibo.Comments, _ = strconv.Atoi(v)
 			case 8:
@@ -569,8 +573,10 @@ func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 			case 5:
 				weibo.Resent, _ = strconv.Atoi(v)
 			case 6:
-				temp := strings.Split(v, ",")
-				weibo.Pictures = append(weibo.Pictures, temp[:len(temp)]...)
+				if len(v) >= 3 {
+					temp := strings.Split(v, ",")
+					weibo.Pictures = append(weibo.Pictures, temp[:len(temp)]...)
+				}
 			case 7:
 				weibo.Comments, _ = strconv.Atoi(v)
 			case 8:
@@ -836,8 +842,10 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 			case 5:
 				weibo.Resent, _ = strconv.Atoi(v)
 			case 6:
-				temp := strings.Split(v, ",")
-				weibo.Pictures = append(weibo.Pictures, temp[:len(temp)]...)
+				if len(v) >= 3 {
+					temp := strings.Split(v, ",")
+					weibo.Pictures = append(weibo.Pictures, temp[:len(temp)]...)
+				}
 			case 7:
 				weibo.Comments, _ = strconv.Atoi(v)
 			case 8:
