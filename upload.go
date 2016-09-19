@@ -26,7 +26,7 @@ func getUUID() string {
 func getFileName(name string) string {
 
 	var temp string = "error"
-	i := strings.Index(name, ".")
+	i := strings.LastIndex(name, ".")
 	if i > 0 {
 		uuid := getUUID()
 		temp = uuid + name[i:]
