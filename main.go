@@ -20,6 +20,7 @@ type JsonResponse struct {
 }
 type WeiBo struct {
 	Weiboid  int      `json:"weiboid"`
+	Concern  bool     `json:"concerned"`
 	Msg      string   `json:"msg"`
 	Author   string   `json:"author"`
 	Creatime string   `json:"creatime"`
@@ -815,6 +816,12 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	key := "user_" + author + "_following"
+	fansofwho, _ := client.SMembers(key)
+	total := len(fansofwho)
+	sort.Strings(fansofwho)
+	fmt.Println(fansofwho)
+
 	client.SAdd("all_users", author) //new user inter weibo system
 
 	weibos, _ := client.LRange("weibo_message", 0, 50)
@@ -834,6 +841,10 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 				weibo.Msg = v
 			case 2:
 				weibo.Author = v
+				has := sort.SearchStrings(fansofwho, weibo.Author)
+				if has < total {
+					weibo.Concern = true
+				}
 			case 3:
 				weibo.Creatime = v
 
