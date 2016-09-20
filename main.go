@@ -109,12 +109,13 @@ func receiveFile(w http.ResponseWriter, req *http.Request, name string) string {
 		fmt.Println("create file error")
 		return ""
 	}
-	defer fW.Close()
 	_, err = io.Copy(fW, file)
 	if err != nil {
 		fmt.Println("copy file error")
 		return ""
 	}
+	fW.Close()
+	compress(uuidFile)
 	return (ACCESS_URL + temp)
 }
 

@@ -3,10 +3,14 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"image"
+	"image/draw"
+	"image/jpeg"
 	"io"
 	"menteslibres.net/gosexy/redis"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 )
 
@@ -14,6 +18,55 @@ const (
 	UPLOAD_PATH string = "./upload/"
 	ACCESS_URL  string = "http://192.168.1.251:8888/"
 )
+
+func compress(name string) {
+	var quality int = 90
+	fmt.Println(name)
+	if !strings.HasSuffix(name, ".jpg") {
+		fmt.Println("not jpg")
+		return
+	}
+	fileinfo, _ := os.Stat(name)
+	if fileinfo.Size()/1024 < 1024 {
+		return
+	}
+
+	f1, err := os.Open(name)
+	if err != nil {
+		panic(err)
+	}
+	m1, err := jpeg.Decode(f1)
+	if err != nil {
+		panic(err)
+	}
+
+	f1.Close()
+	d := path.Dir(name)
+	var temp string = path.Join(d, "_temp_")
+RECOMPRESS:
+	fmt.Println(name)
+	quality -= 10
+	f2, err := os.Create(temp)
+	if err != nil {
+		panic(err)
+	}
+
+	bounds := m1.Bounds()
+	m := image.NewRGBA(bounds)
+	draw.Draw(m, bounds, m1, bounds.Min, draw.Src)
+	err = jpeg.Encode(f2, m, &jpeg.Options{quality})
+	if err != nil {
+		panic(err)
+	}
+	f2.Close()
+	fileinfo, _ = os.Stat(temp)
+	if fileinfo.Size()/1024 < 1024 {
+		os.Rename(temp, name)
+		return
+	}
+	goto RECOMPRESS
+
+}
 
 func getUUID() string {
 	f, _ := os.OpenFile("/dev/urandom", os.O_RDONLY, 0)
@@ -54,12 +107,14 @@ func uploadHandle(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("create file error")
 			return
 		}
-		defer fW.Close()
+		//defer fW.Close()
 		_, err = io.Copy(fW, file)
 		if err != nil {
 			fmt.Println("copy file error")
 			return
 		}
+		fW.Close()
+		compress(uuidFile)
 		io.WriteString(w, (ACCESS_URL + temp))
 		io.WriteString(w, r.FormValue("user"))
 	}
