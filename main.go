@@ -121,7 +121,7 @@ func receiveFile(w http.ResponseWriter, req *http.Request, name string) string {
 
 func writev2Handle(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "GET" {
-		io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action='writev2?author=%s&msg=%s' method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file0'/><br/><input type=\"file\" name='file1'/><br/><input type=\"file\" name='file2'/><br/><<input type=\"file\" name='file3'/><br/><<input type=\"file\" name='file4'/><br/><<input type=\"file\" name='file5'/><br/><<input type=\"file\" name='file6'/><br/><<input type=\"file\" name='file7'/><br/><<input type=\"file\" name='file8'/><br/><<label><input type=\"submit\" value=\"上传图片\"/></label></form></body></html>", req.FormValue("author"), req.FormValue("msg")))
+		io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action=\"writev2?author=%s&msg=%s\" method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file0'/><br/><input type=\"file\" name='file1'/><br/><input type=\"file\" name='file2'/><br/><<input type=\"file\" name='file3'/><br/><<input type=\"file\" name='file4'/><br/><<input type=\"file\" name='file5'/><br/><<input type=\"file\" name='file6'/><br/><<input type=\"file\" name='file7'/><br/><<input type=\"file\" name='file8'/><br/><<label><input type=\"submit\" value=\"上传图片\"/></label></form></body></html>", req.FormValue("author"), req.FormValue("msg")))
 	} else {
 		var pictures []string
 		for i := 0; i < 9; i++ {
