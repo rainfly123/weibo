@@ -2,6 +2,10 @@
 **1 点赞**
 http://192.168.1.251:8888/support?login_user=2&weiboid=3
 
+
+**1.1 取消点赞**
+http://192.168.1.251:8888/unsupport?login_user=2&weiboid=3
+
 **2 查询点赞**
 http://192.168.1.251:8888/checksupport?&weiboid=3
 返回点赞者列表JSON
@@ -389,6 +393,8 @@ http://192.168.1.251:8888/square?login_user=xx
     "Data": 
     [{
         "Weiboid": 12,
+        "Concerned": true,
+        "Supported": false,
         "Msg": "我是1号",
         "Author": "1",
         "Creatime": "2016-08-25 10:27:22",

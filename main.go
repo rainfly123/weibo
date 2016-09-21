@@ -21,6 +21,7 @@ type JsonResponse struct {
 type WeiBo struct {
 	Weiboid  int      `json:"weiboid"`
 	Concern  bool     `json:"concerned"`
+	Support  bool     `json:"supported"`
 	Msg      string   `json:"msg"`
 	Author   string   `json:"author"`
 	Creatime string   `json:"creatime"`
@@ -295,6 +296,38 @@ func supportHandle(w http.ResponseWriter, req *http.Request) {
 	b, _ := json.Marshal(jsonres)
 	io.WriteString(w, string(b))
 }
+func unsupportHandle(w http.ResponseWriter, req *http.Request) {
+	author := req.FormValue("login_user")
+	weiboid := req.FormValue("weiboid")
+	if len(author) < 1 || len(weiboid) < 1 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
+	}
+
+	var ok bool
+	var client *redis.Client
+	client, ok = clients.Get()
+	if ok != true {
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
+	}
+
+	keys := "weibo_" + weiboid + "_supports"
+	client.LRem(keys, 0, author)
+
+	keyv := "weibo_" + weiboid
+	client.HIncrBy(keyv, "supports", -1)
+	client.Close()
+
+	jsonres := JsonResponse{0, "Succeeded"}
+	b, _ := json.Marshal(jsonres)
+	io.WriteString(w, string(b))
+}
+
 func checksupportHandle(w http.ResponseWriter, req *http.Request) {
 
 	weiboid := req.FormValue("weiboid")
@@ -490,6 +523,7 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 			switch i {
 			case 0:
 				weibo.Weiboid, _ = strconv.Atoi(v)
+				weibo.Support = alreadSupport(weibo.Weiboid, login_user, client)
 			case 1:
 				weibo.Msg = v
 			case 2:
@@ -799,6 +833,18 @@ func forwardHandle(w http.ResponseWriter, req *http.Request) {
 	b, _ := json.Marshal(JsonResponse{0, "Succeeded"})
 	io.WriteString(w, string(b))
 }
+func alreadSupport(weiboid int, login_user string, client *redis.Client) bool {
+
+	key := fmt.Sprintf("weibo_%d_supports", weiboid)
+	supports, _ := client.LRange(key, 0, -1)
+	total := len(supports)
+	sort.Strings(supports)
+	has := sort.SearchStrings(supports, login_user)
+	if has < total {
+		return true
+	}
+	return false
+}
 func squareHandle(w http.ResponseWriter, req *http.Request) {
 	author := req.FormValue("login_user")
 	if len(author) < 1 {
@@ -839,6 +885,7 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 			switch i {
 			case 0:
 				weibo.Weiboid, _ = strconv.Atoi(v)
+				weibo.Support = alreadSupport(weibo.Weiboid, author, client)
 			case 1:
 				weibo.Msg = v
 			case 2:
@@ -907,6 +954,7 @@ func main() {
 	client.Close()
 
 	http.HandleFunc("/support", supportHandle)
+	http.HandleFunc("/unsupport", unsupportHandle)
 	http.HandleFunc("/checksupport", checksupportHandle)
 	http.HandleFunc("/write", writeHandle)
 	http.HandleFunc("/writev2", writev2Handle)
