@@ -244,6 +244,7 @@ http://192.168.1.251:8888/check?login_user=1
     "data": [
         {
             "weiboid": 15,
+            "supported":true,
             "msg": "你好",
             "author": "1",
             "creatime": "2016-09-10 13:38:40",
