@@ -115,7 +115,8 @@ func receiveFile(w http.ResponseWriter, req *http.Request, name string) string {
 		return ""
 	}
 	fW.Close()
-	compress(uuidFile)
+	//compress(uuidFile)
+	Resize(uuidFile)
 	return (ACCESS_URL + temp)
 }
 

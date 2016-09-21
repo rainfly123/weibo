@@ -1,2 +1,2 @@
-go build -o weibo main.go upload.go  redispool.go
+go build -o weibo main.go upload.go  redispool.go resize.go
 echo "run"
