@@ -776,9 +776,10 @@ func getUserinfoLoginuser(login_user, userid string, client *redis.Client, detai
 	}
 	if strings.EqualFold(userid, login_user) {
 		user.Concern = true
+	} else {
+		user.Concern = whetherConcerned(login_user, userid, client)
 	}
 	user.Userid = userid
-	user.Concern = whetherConcerned(login_user, userid, client)
 	for i, v := range ls {
 		switch i {
 		case 0:
@@ -826,7 +827,7 @@ func getUserinfoLoginuser(login_user, userid string, client *redis.Client, detai
 		}
 
 		for _, p := range recuser {
-			temp = getUserinfo(p, client, false)
+			temp = getUserinfoLoginuser(login_user, p, client, false)
 			user.Recommend = append(user.Recommend, temp)
 		}
 	}
