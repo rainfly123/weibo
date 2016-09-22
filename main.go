@@ -761,7 +761,9 @@ func whetherConcerned(login_user, userid string, client *redis.Client) bool {
 
 	has := sort.SearchStrings(following, userid)
 	if has < total {
-		return true
+		if strings.EqualFold(userid, following[has]) {
+			return true
+		}
 	}
 	return false
 }
@@ -925,7 +927,9 @@ func alreadSupport(weiboid int, login_user string, client *redis.Client) bool {
 	sort.Strings(supports)
 	has := sort.SearchStrings(supports, login_user)
 	if has < total {
-		return true
+		if strings.EqualFold(login_user, supports[has]) {
+			return true
+		}
 	}
 	return false
 }
@@ -976,7 +980,9 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 				weibo.Author = v
 				has := sort.SearchStrings(fansofwho, weibo.Author)
 				if has < total {
-					weibo.Concern = true
+					if strings.EqualFold(weibo.Author, fansofwho[has]) {
+						weibo.Concern = true
+					}
 				}
 			case 3:
 				weibo.Creatime = v
