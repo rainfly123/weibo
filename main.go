@@ -35,6 +35,7 @@ type WeiBo struct {
 
 type User struct {
 	Userid    string `json:"userid"`
+	Concern   bool   `json:"concerned"`
 	Nickname  string `json:"nickname"`
 	Gender    string `json:"gender"`
 	Location  string `json:"location"`
@@ -751,6 +752,87 @@ func getUserinfo(userid string, client *redis.Client, detail bool) User {
 	return user
 }
 
+func whetherConcerned(login_user, userid string, client *redis.Client) bool {
+	key := "user_" + login_user + "_following"
+	following, _ := client.SMembers(key)
+
+	total := len(following)
+	sort.Strings(following)
+
+	has := sort.SearchStrings(following, userid)
+	if has < total {
+		return true
+	}
+	return false
+}
+
+func getUserinfoLoginuser(login_user, userid string, client *redis.Client, detail bool) User {
+
+	var user User
+	key := "user_" + userid + "_profile"
+	ls, err := client.HMGet(key, "nickname", "gender", "location", "signature", "portrait")
+	if err != nil {
+		return user
+	}
+	if strings.EqualFold(userid, login_user) {
+		user.Concern = true
+	}
+	user.Userid = userid
+	user.Concern = whetherConcerned(login_user, userid, client)
+	for i, v := range ls {
+		switch i {
+		case 0:
+			user.Nickname = v
+		case 1:
+			user.Gender = v
+		case 2:
+			user.Location = v
+		case 3:
+			user.Signature = v
+		case 4:
+			if v == "" {
+				v = "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg"
+			}
+			user.Portrait = v
+		}
+	}
+	if detail {
+		var temp User
+		keyer := "user_" + userid + "_follower"
+		follower, _ := client.SMembers(keyer)
+		for _, n := range follower {
+			temp = getUserinfoLoginuser(login_user, n, client, false)
+			user.Follower = append(user.Follower, temp)
+		}
+
+		keying := "user_" + userid + "_following"
+		following, _ := client.SMembers(keying)
+		for _, k := range following {
+			temp = getUserinfoLoginuser(login_user, k, client, false)
+			user.Following = append(user.Following, temp)
+		}
+
+		// s, _ := client.SRandMember("all_users", 10)
+		var recuser []string
+		s := recommend(client)
+		for _, us := range s {
+			if has(following, us) || strings.EqualFold(us, userid) {
+				continue
+			} else {
+				if !has(recuser, us) {
+					recuser = append(recuser, us)
+				}
+			}
+		}
+
+		for _, p := range recuser {
+			temp = getUserinfo(p, client, false)
+			user.Recommend = append(user.Recommend, temp)
+		}
+	}
+	return user
+}
+
 func has(sl []string, el string) bool {
 	for _, i := range sl {
 		if strings.EqualFold(i, el) {
@@ -762,8 +844,9 @@ func has(sl []string, el string) bool {
 
 func userInfo(w http.ResponseWriter, req *http.Request) {
 	userid := req.FormValue("userid")
+	login_user := req.FormValue("login_user")
 
-	if len(userid) < 1 {
+	if len(userid) < 1 || len(login_user) < 1 {
 		jsonres := JsonResponse{1, "argument error"}
 		b, _ := json.Marshal(jsonres)
 		io.WriteString(w, string(b))
@@ -787,7 +870,7 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 	jsonres := MyResponse{}
 	jsonres.Code = 0
 	jsonres.Message = "Succeeded"
-	jsonres.Data = getUserinfo(userid, client, true)
+	jsonres.Data = getUserinfoLoginuser(login_user, userid, client, true)
 	client.Close()
 
 	b, _ := json.Marshal(jsonres)

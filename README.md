@@ -306,22 +306,24 @@ http://192.168.1.251:8888/portrait?login_user=xxx    FORM multi-part 传输 ,nam
 http://192.168.1.251:8888/forwared?login_user=xxx&msg=你好&origin=xxx  （origin原微博ID）
 
 **13 查询用户信息**
-http://192.168.1.251:8888/userinfo?userid=3  含推荐
+http://192.168.1.251:8888/userinfo?userid=x&login_user=xx  含推荐
 ```
 返回用户信息
 {
-    "Code: 0,
-    "Message": "Succeeded" 
-    "Data": {
-    "Userid": "3",
+    "code: 0,
+    "message": "Succeeded" 
+    "data": {
+    "userid": "3",
+    "concerned":true;
     "nickname": "”雨飞飞“",
-    "Gender": "男",
-    "Location": "北京",
-    "Signature": "我是圣人",
-    "Portrait": "http://192.168.1.251:8888/c086a66d2d3925ae2c015f5647200761.jpg",
-    "Follower": [
+    "gender": "男",
+    "location": "北京",
+    "signature": "我是圣人",
+    "portrait": "http://192.168.1.251:8888/c086a66d2d3925ae2c015f5647200761.jpg",
+    "follower": [
         {
             "Userid": "1",
+            "concerned":false;
             "nickname": "长城",
             "Gender": "男",
             "Location": "北京",
@@ -333,6 +335,7 @@ http://192.168.1.251:8888/userinfo?userid=3  含推荐
         },
         {
             "Userid": "2",
+            "concerned":false;
             "nickname": "蓝天",
             "Gender": "太监",
             "Location": "广州",
@@ -343,10 +346,11 @@ http://192.168.1.251:8888/userinfo?userid=3  含推荐
             "Recommend": null
         }
     ],
-    "Following": [
+    "following": [
         {
             "Userid": "1",
             "nickname": "长城",
+            "concerned":true;
             "Gender": "男",
             "Location": "北京",
             "Signature": "万里长城永不倒",
@@ -359,6 +363,7 @@ http://192.168.1.251:8888/userinfo?userid=3  含推荐
     "Recommend": [
         {
             "Userid": "6",
+            "concerned":true;
             "nickname": "红嘴鸥",
             "Gender": "女",
             "Location": "昆明",
