@@ -681,7 +681,7 @@ func recommend(client *redis.Client) []string {
 	for _, v := range weibos {
 		key := "weibo_" + v
 		ls, err := client.HGet(key, "author")
-		if err != nil {
+		if err != nil || len(ls) < 1 {
 			continue
 		}
 		users = append(users, ls)
