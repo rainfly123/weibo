@@ -142,7 +142,7 @@ func portraitHandle(w http.ResponseWriter, r *http.Request) {
 			io.WriteString(w, string(b))
 			return
 		}
-		defer fW.Close()
+		//	defer fW.Close()
 		_, err = io.Copy(fW, file)
 		if err != nil {
 			jsonres := JsonResponse{2, "system error"}
@@ -150,6 +150,8 @@ func portraitHandle(w http.ResponseWriter, r *http.Request) {
 			io.WriteString(w, string(b))
 			return
 		}
+		fW.Close()
+		Resize(uuidFile)
 		var ok bool
 		var client *redis.Client
 		client, ok = clients.Get()
