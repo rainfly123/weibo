@@ -374,7 +374,7 @@ func checksupportHandle(w http.ResponseWriter, req *http.Request) {
 func concernHandle(w http.ResponseWriter, req *http.Request) {
 	login_user := req.FormValue("login_user")
 	concern := req.FormValue("concern")
-	if len(login_user) < 1 || len(concern) < 1 {
+	if len(login_user) < 1 || len(concern) < 1 || strings.EqualFold(login_user, concern) {
 		jsonres := JsonResponse{1, "argument error"}
 		b, _ := json.Marshal(jsonres)
 		io.WriteString(w, string(b))
