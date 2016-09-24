@@ -502,6 +502,7 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 	all := make([]string, 0, 200)
 	key := "user_" + login_user + "_following"
 	users, _ := client.SMembers(key)
+	users = append(users, login_user)
 
 	for _, v := range users {
 		k := "user_" + v + "_weibo"
