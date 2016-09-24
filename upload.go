@@ -174,7 +174,7 @@ func portraitHandle(w http.ResponseWriter, r *http.Request) {
 
 		type MyResponse struct {
 			JsonResponse
-			Url string `json:"url"`
+			Url string `json:"Data"`
 		}
 
 		jsonres := MyResponse{}
