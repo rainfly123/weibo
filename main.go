@@ -529,6 +529,7 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 				weibo.Msg = v
 			case 2:
 				weibo.Author = v
+				weibo.Concern = true
 			case 3:
 				weibo.Creatime = v
 			case 4:
