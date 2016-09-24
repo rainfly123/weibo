@@ -703,6 +703,14 @@ func getUserinfo(userid string, client *redis.Client, detail bool) User {
 		switch i {
 		case 0:
 			user.Nickname = v
+			if v == "" {
+				end := len(userid)
+				start := end - 4
+				if start < 0 {
+					start = 0
+				}
+				user.Nickname = "游客_" + userid[start:end]
+			}
 		case 1:
 			user.Gender = v
 		case 2:
@@ -787,6 +795,14 @@ func getUserinfoLoginuser(login_user, userid string, client *redis.Client, detai
 		switch i {
 		case 0:
 			user.Nickname = v
+			if v == "" {
+				end := len(userid)
+				start := end - 4
+				if start < 0 {
+					start = 0
+				}
+				user.Nickname = "游客_" + userid[start:end]
+			}
 		case 1:
 			user.Gender = v
 		case 2:
