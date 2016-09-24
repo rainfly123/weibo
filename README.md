@@ -299,6 +299,8 @@ http://192.168.1.251:8888/profile?login_user=xx&nickname=xxx&gender=xx&location=
 
 **11 更新头像**
 http://192.168.1.251:8888/portrait?login_user=xxx    FORM multi-part 传输 ,name="file"
+返回
+{"code":0,"message":"Succeeded","Data":"http://192.168.1.251:8888/f6bd529a64de3832a00912a550ed5fae.jpg"}
 
 **12 转发微博**
 http://192.168.1.251:8888/forwared?login_user=xxx&msg=你好&origin=xxx  （origin原微博ID）
