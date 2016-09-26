@@ -206,8 +206,9 @@ func commentHandle(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	now := time.Now().Format("2006-01-02 15:04:05")
 	keyc := "weibo_" + weiboid + "_comments"
-	value := author + ":" + comment
+	value := author + "@" + comment + "@" + now
 	client.RPush(keyc, value)
 	keyv := "weibo_" + weiboid
 	client.HIncrBy(keyv, "comments", 1)
@@ -219,8 +220,9 @@ func commentHandle(w http.ResponseWriter, req *http.Request) {
 func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 
 	type Comment struct {
-		Author  User   `json:"author"`
-		Comment string `json:"comment"`
+		Author   User   `json:"author"`
+		Comment  string `json:"comment"`
+		Creatime string `json:"creatime"`
 	}
 
 	weiboid := req.FormValue("weiboid")
@@ -246,9 +248,11 @@ func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 	comments, _ := client.LRange(key, 0, -1)
 	for _, v := range comments {
 		var comment Comment
-		temp := strings.Split(v, ":")
+		temp := strings.Split(v, "@")
+		fmt.Println(temp)
 		comment.Author = getUserinfo(temp[0], client, false)
 		comment.Comment = temp[1]
+		comment.Creatime = temp[2]
 		all = append(all, comment)
 	}
 
@@ -745,6 +749,9 @@ func getUserinfo(userid string, client *redis.Client, detail bool) User {
 		var recuser []string
 		s := recommend(client)
 		for _, us := range s {
+			if len(recuser) >= 5 {
+				break
+			}
 			if has(following, us) || strings.EqualFold(us, userid) {
 				continue
 			} else {
@@ -837,6 +844,9 @@ func getUserinfoLoginuser(login_user, userid string, client *redis.Client, detai
 		var recuser []string
 		s := recommend(client)
 		for _, us := range s {
+			if len(recuser) >= 5 {
+				break
+			}
 			if has(following, us) || strings.EqualFold(us, userid) {
 				continue
 			} else {
