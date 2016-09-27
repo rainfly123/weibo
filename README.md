@@ -286,7 +286,7 @@ http://192.168.1.251:8888/portrait?login_user=xxx    FORM multi-part 传输 ,nam
 {"code":0,"message":"Succeeded","Data":"http://192.168.1.251:8888/f6bd529a64de3832a00912a550ed5fae.jpg"}
 
 **12 转发微博**
-http://192.168.1.251:8888/forwared?login_user=xxx&msg=你好&origin=xxx  （origin原微博ID）
+http://192.168.1.251:8888/forwar?login_user=xxx&msg=你好&origin=xxx  （origin原微博ID）
 
 **13 查询用户信息**
 http://192.168.1.251:8888/userinfo?userid=x&login_user=xx  含推荐
