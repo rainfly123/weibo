@@ -967,7 +967,7 @@ func userInfo(w http.ResponseWriter, req *http.Request) {
 }
 
 func forwardHandle(w http.ResponseWriter, req *http.Request) {
-	author := req.FormValue("author")
+	author := req.FormValue("login_user")
 	msg := req.FormValue("msg")
 	origin := req.FormValue("origin")
 	if len(author) < 1 || len(msg) < 3 || len(origin) < 1 {
