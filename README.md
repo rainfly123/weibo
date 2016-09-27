@@ -88,10 +88,10 @@ http://192.168.1.251:8888/checksupport?&weiboid=3
 http://192.168.1.251:8888/comment?login_user=2&weiboid=3&comment=%E6%A5%BC%E4%B8%BB%E5%84%BF%E5%82%BB%E9%80%BC
 
 **3.1 点赞评论**
-http://192.168.1.251:8888/supportcomment?weiboid=3&commentid=2
+http://192.168.1.251:8888/supportcomment?weiboid=3&commentid=2&login_user=x
 
 **4 查询评论**
-http://192.168.1.251:8888/checkcomment?weiboid=3
+http://192.168.1.251:8888/checkcomment?weiboid=3&login_user=x
 `
 返回评论列表JSON																	
 ```
@@ -114,6 +114,7 @@ http://192.168.1.251:8888/checkcomment?weiboid=3
         "comment": "“地方的”"
         "commentid": 0
         "supports": 0
+        "supported": true
         :creatime: "2016-10-01 11:30:31"
     },
     {
@@ -131,6 +132,7 @@ http://192.168.1.251:8888/checkcomment?weiboid=3
         "comment": "“地方的”"
         "commentid": 1
         "supports": 3
+        "supported": false
         :creatime: "2016-10-01 11:30:31"
     },
     ]

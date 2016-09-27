@@ -208,10 +208,14 @@ func commentHandle(w http.ResponseWriter, req *http.Request) {
 
 	now := time.Now().Format("2006-01-02 15:04:05")
 	keyc := "weibo_" + weiboid + "_comments"
+	idx, _ := client.LLen(keyc)
 	value := author + "$" + comment + "$" + now + "$0"
 	client.RPush(keyc, value)
 	keyv := "weibo_" + weiboid
 	client.HIncrBy(keyv, "comments", 1)
+	tempp := strconv.Itoa(int(idx))
+	keycomsup := "weibo_" + weiboid + "_comment_" + tempp
+	client.SAdd(keycomsup, "0")
 	client.Close()
 	jsonres := JsonResponse{0, "Succeeded"}
 	b, _ := json.Marshal(jsonres)
@@ -219,8 +223,9 @@ func commentHandle(w http.ResponseWriter, req *http.Request) {
 }
 func supportcommentHandle(w http.ResponseWriter, req *http.Request) {
 	weiboid := req.FormValue("weiboid")
+	login_user := req.FormValue("login_user")
 	commentid := req.FormValue("commentid")
-	if len(weiboid) < 1 || len(commentid) < 1 {
+	if len(weiboid) < 1 || len(commentid) < 1 || len(login_user) < 1 {
 		jsonres := JsonResponse{1, "argument error"}
 		b, _ := json.Marshal(jsonres)
 		io.WriteString(w, string(b))
@@ -254,6 +259,10 @@ func supportcommentHandle(w http.ResponseWriter, req *http.Request) {
 
 	b, _ := json.Marshal(jsonres)
 	io.WriteString(w, string(b))
+
+	keycomsup := "weibo_" + weiboid + "_comment_" + commentid
+	client.SAdd(keycomsup, login_user)
+
 	client.Close()
 
 }
@@ -261,15 +270,17 @@ func supportcommentHandle(w http.ResponseWriter, req *http.Request) {
 func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 
 	type Comment struct {
-		Id       int    `json:"commentid"`
-		Comment  string `json:"comment"`
-		Creatime string `json:"creatime"`
-		Supports int    `json:"supports"`
-		Author   User   `json:"author"`
+		Id        int    `json:"commentid"`
+		Comment   string `json:"comment"`
+		Creatime  string `json:"creatime"`
+		Supports  int    `json:"supports"`
+		Supported bool   `json:"supported"`
+		Author    User   `json:"author"`
 	}
 
 	weiboid := req.FormValue("weiboid")
-	if len(weiboid) < 1 {
+	login_user := req.FormValue("login_user")
+	if len(weiboid) < 1 || len(login_user) < 1 {
 		jsonres := JsonResponse{1, "argument error"}
 		b, _ := json.Marshal(jsonres)
 		io.WriteString(w, string(b))
@@ -297,6 +308,9 @@ func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 		comment.Comment = temp[1]
 		comment.Creatime = temp[2]
 		comment.Supports, _ = strconv.Atoi(temp[3])
+		index := strconv.Itoa(ix)
+		keycomsup := "weibo_" + weiboid + "_comment_" + index
+		comment.Supported, _ = client.SIsMember(keycomsup, login_user)
 		all = append(all, comment)
 	}
 
