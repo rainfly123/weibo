@@ -208,7 +208,7 @@ func commentHandle(w http.ResponseWriter, req *http.Request) {
 
 	now := time.Now().Format("2006-01-02 15:04:05")
 	keyc := "weibo_" + weiboid + "_comments"
-	value := author + "@" + comment + "@" + now
+	value := author + "$" + comment + "$" + now + "$0"
 	client.RPush(keyc, value)
 	keyv := "weibo_" + weiboid
 	client.HIncrBy(keyv, "comments", 1)
@@ -217,12 +217,55 @@ func commentHandle(w http.ResponseWriter, req *http.Request) {
 	b, _ := json.Marshal(jsonres)
 	io.WriteString(w, string(b))
 }
+func supportcommentHandle(w http.ResponseWriter, req *http.Request) {
+	weiboid := req.FormValue("weiboid")
+	commentid := req.FormValue("commentid")
+	if len(weiboid) < 1 || len(commentid) < 1 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
+	}
+	var ok bool
+	var client *redis.Client
+	client, ok = clients.Get()
+	if ok != true {
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
+	}
+	key := "weibo_" + weiboid + "_comments"
+	id, _ := strconv.Atoi(commentid)
+	kid := int64(id)
+	comment, _ := client.LRange(key, kid, kid)
+	temp := strings.Split(comment[0], "$")
+	author := temp[0]
+	con := temp[1]
+	creatime := temp[2]
+	supports, _ := strconv.Atoi(temp[3])
+	supports += 1
+	value := author + "$" + con + "$" + creatime + "$" + strconv.Itoa(supports)
+	client.LSet(key, kid, value)
+
+	jsonres := JsonResponse{}
+	jsonres.Code = 0
+	jsonres.Message = "Succeeded"
+
+	b, _ := json.Marshal(jsonres)
+	io.WriteString(w, string(b))
+	client.Close()
+
+}
+
 func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 
 	type Comment struct {
-		Author   User   `json:"author"`
+		Id       int    `json:"commentid"`
 		Comment  string `json:"comment"`
 		Creatime string `json:"creatime"`
+		Supports int    `json:"supports"`
+		Author   User   `json:"author"`
 	}
 
 	weiboid := req.FormValue("weiboid")
@@ -246,13 +289,14 @@ func checkcommentHandle(w http.ResponseWriter, req *http.Request) {
 
 	key := "weibo_" + weiboid + "_comments"
 	comments, _ := client.LRange(key, 0, -1)
-	for _, v := range comments {
+	for ix, v := range comments {
 		var comment Comment
-		temp := strings.Split(v, "@")
-		fmt.Println(temp)
+		comment.Id = ix
+		temp := strings.Split(v, "$")
 		comment.Author = getUserinfo(temp[0], client, false)
 		comment.Comment = temp[1]
 		comment.Creatime = temp[2]
+		comment.Supports, _ = strconv.Atoi(temp[3])
 		all = append(all, comment)
 	}
 
@@ -1078,6 +1122,7 @@ func main() {
 	http.HandleFunc("/writev2", writev2Handle)
 	http.HandleFunc("/comment", commentHandle)
 	http.HandleFunc("/checkcomment", checkcommentHandle)
+	http.HandleFunc("/supportcomment", supportcommentHandle)
 	http.HandleFunc("/upload", uploadHandle)
 	http.HandleFunc("/concern", concernHandle)
 	http.HandleFunc("/cancelconcern", cancelconcernHandle)

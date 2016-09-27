@@ -87,6 +87,9 @@ http://192.168.1.251:8888/checksupport?&weiboid=3
 **3 评论**
 http://192.168.1.251:8888/comment?login_user=2&weiboid=3&comment=%E6%A5%BC%E4%B8%BB%E5%84%BF%E5%82%BB%E9%80%BC
 
+**3.1 点赞评论**
+http://192.168.1.251:8888/supportcomment?weiboid=3&commentid=2
+
 **4 查询评论**
 http://192.168.1.251:8888/checkcomment?weiboid=3
 `
@@ -97,8 +100,8 @@ http://192.168.1.251:8888/checkcomment?weiboid=3
     "Message": "Succeeded" 
     "Data": 
 	[{
-	"Author": {
-	"Userid": "2",
+	"author": {
+	"userid": "2",
             "nickname": "蓝天",
             "Gender": "太监",
             "Location": "广州",
@@ -108,10 +111,13 @@ http://192.168.1.251:8888/checkcomment?weiboid=3
             "Following": null,
             "Recommend": null
         },
-        "Comment": "“地方的”"
+        "comment": "“地方的”"
+        "commentid": 0
+        "supports": 0
+        :creatime: "2016-10-01 11:30:31"
     },
     {
-        "Author": {
+        "author": {
             "Userid": "2",
             "nickname": "蓝天",
             "Gender": "太监",
@@ -122,35 +128,10 @@ http://192.168.1.251:8888/checkcomment?weiboid=3
             "Following": null,
             "Recommend": null
         },
-        "Comment": "“地方的”"
-    },
-    {
-        "Author": {
-            "Userid": "2",
-            "nickname": "蓝天",
-            "Gender": "太监",
-            "Location": "广州",
-            "Signature": "爱蓝天",
-            "Portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
-            "Follower": null,
-            "Following": null,
-            "Recommend": null
-        },
-        "Comment": "“地方的”"
-    },
-    {
-        "Author": {
-            "Userid": "2",
-            "nickname": "蓝天",
-            "Gender": "太监",
-            "Location": "广州",
-            "Signature": "爱蓝天",
-            "Portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
-            "Follower": null,
-            "Following": null,
-            "Recommend": null
-        },
-        "Comment": "“地方的”"
+        "comment": "“地方的”"
+        "commentid": 1
+        "supports": 3
+        :creatime: "2016-10-01 11:30:31"
     },
     ]
 }
