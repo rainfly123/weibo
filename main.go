@@ -542,6 +542,42 @@ func getWeibo(weiboid string, client *redis.Client) *WeiBo {
 	return &weibo
 }
 
+func deleteHandle(w http.ResponseWriter, req *http.Request) {
+	login_user := req.FormValue("login_user")
+	weiboid := req.FormValue("weiboid")
+	if len(login_user) < 1 || len(weiboid) < 1 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
+	}
+
+	var ok bool
+	var client *redis.Client
+	client, ok = clients.Get()
+	if ok != true {
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
+	}
+
+	key := "weibo_message"
+	client.LRem(key, 0, weiboid)
+	key = "user_" + login_user + "_weibo"
+	client.LRem(key, 0, weiboid)
+	key = "weibo_" + weiboid
+	client.Del(key)
+
+	jsonres := JsonResponse{}
+	jsonres.Code = 0
+	jsonres.Message = "Succeeded"
+
+	b, _ := json.Marshal(jsonres)
+	io.WriteString(w, string(b))
+	client.Close()
+}
+
 func checkHandle(w http.ResponseWriter, req *http.Request) {
 	login_user := req.FormValue("login_user")
 	if len(login_user) < 1 {
@@ -1147,6 +1183,7 @@ func main() {
 	http.HandleFunc("/forward", forwardHandle)
 	http.HandleFunc("/userinfo", userInfo)
 	http.HandleFunc("/square", squareHandle)
+	http.HandleFunc("/delete", deleteHandle)
 
 	http.HandleFunc("/test", testHandle)
 

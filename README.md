@@ -481,3 +481,6 @@ http://192.168.1.251:8888/square?login_user=xx
    
 ]}
 ```
+
+**15 删除自己的微博**
+http://192.168.1.251:8888/delete?login_user=2&weiboid=3
