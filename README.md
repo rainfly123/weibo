@@ -1,4 +1,14 @@
-# Weibo API Summary
+# Weibo 
+The Project using Golang language and Redis NO-SQL database  realizes  Chinese's Sina Weibo
+having the following features: 
+1. Publish weibo message 
+2. Edit your profile and portrait
+3. Concern someone or undo 
+4. Check new weibo message or check what you concern
+5. Forward the weibo message
+6. Support or unsupport the weibo mesage
+7. Comment the weibo message and support any comment
+##These are Weibo API list Summary
 **1 点赞**
 http://192.168.1.251:8888/support?login_user=2&weiboid=3
 
