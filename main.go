@@ -1100,10 +1100,14 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 				weibo.Msg = v
 			case 2:
 				weibo.Author = v
-				has := sort.SearchStrings(fansofwho, weibo.Author)
-				if has < total {
-					if strings.EqualFold(weibo.Author, fansofwho[has]) {
-						weibo.Concern = true
+				if strings.EqualFold(weibo.Author, author) {
+					weibo.Concern = true
+				} else {
+					has := sort.SearchStrings(fansofwho, weibo.Author)
+					if has < total {
+						if strings.EqualFold(weibo.Author, fansofwho[has]) {
+							weibo.Concern = true
+						}
 					}
 				}
 			case 3:
