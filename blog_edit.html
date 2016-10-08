@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8"> 
+   <title>在线尝试 Bootstrap 实例</title>
+   <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">  
+   <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+   <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container" id="abc">
+</div>
+
+<script>
+var sss = '<div class="container">';
+ var  str1 = '<div class="row clearfix">'
+      + '<div class="col-md-12 column"> <div class="btn-group">'
+     +  '<button class="btn btn-default">分类</button>'
+     +  '<button data-toggle="dropdown" class="btn btn-default dropdown-toggle">'
+     +  '<span class="caret"></span></button>'
+     +  '<ul class="dropdown-menu">'
+     +  '<li class="disabled">'
+      + '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=军事">军事</a>'
+      +  '</li>'
+     +   '<li class="disabled">'
+      +  '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=名人">名人</a>'
+      +  '</li>'
+
+       + '<li class="disabled">'
+      +  '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=财经">财经</a>'
+      +  '</li>'
+
+       + '<li class="disabled">'
+      +  '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=科学">科学</a>'
+      +  '</li>'
+
+
+       + '<li class="disabled">'
+      +  '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=商家">商家</a>'
+      +  '</li>'
+
+       + '<li class="disabled">'
+       + '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=文学">文学</a>'
+       + '</li>'
+       + '</ul>'
+       + '</div> <p>';
+
+ var str2 = '</p>';
+ var str3 = '<div class="row clearfix">';
+
+$.getJSON('http://live.66boss.com/weibo/square?login_user=3', function(data){
+
+var    result = ""
+  //    document.write(sss);
+$.each(data['data'], function(i, weibo){
+
+   var reg=new RegExp("idw","g"); 
+   var ttt = str1.replace(reg, weibo.weiboid);
+  var msg = ttt + weibo.msg + str2;
+     result = result + msg;
+      if (weibo.pictures!=null && weibo.pictures.length > 0) 
+   {
+        result = result + str3;
+    }
+  for(var a in weibo.pictures) {
+  // $("#abc").append("<p>" + weibo.pictures[a] + "</p>");
+      
+
+      var temp = '<div class="col-md-2 column"> <img alt="140x140" height="260" width="210"  src="' 
+               + weibo.pictures[a] 
+               + '"/></div>';
+        result = result + temp;
+
+   }
+
+      if (weibo.pictures!=null && weibo.pictures.length > 0) 
+    {
+        var str = "</div>" ;
+        result = result + str;
+      }
+
+      var str = "</div></div>";
+        result = result + str;
+ 
+})
+
+     // var str = "</div>"
+    //  document.write(str)
+      //document.close()
+
+      document.getElementById("abc").innerHTML = result;
+});
+
+</script>
+
+</body>
+</html>
