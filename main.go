@@ -30,6 +30,7 @@ type WeiBo struct {
 	Pictures []string `json:"pictures"`
 	Comments int      `json:"comments"`
 	Origin   *WeiBo   `json:"origin"`
+	Flag     string   `json:"class"`
 	Userinfo User     `json:"user"`
 }
 
@@ -610,11 +611,11 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	fmt.Println("weibo IDS ", all) //all is weiboid list
+	//fmt.Println("weibo IDS ", all) //all is weiboid list
 	allweibo := make(ALL_WeiBO, 0, 5000)
 	for _, vv := range all {
 		//ls, err := client.HGetAll("weibo_" + vv)
-		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin")
+		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag")
 		if err != nil {
 			continue
 		}
@@ -644,6 +645,8 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 				weibo.Comments, _ = strconv.Atoi(v)
 			case 8:
 				weibo.Origin = getWeibo(v, client)
+			case 9:
+				weibo.Flag = v
 			}
 		}
 		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
@@ -690,7 +693,7 @@ func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 	allweibo := make(ALL_WeiBO, 0, 500)
 	for _, vv := range weibos {
 		//ls, err := client.HGetAll("weibo_" + vv)
-		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin")
+		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag")
 		if err != nil {
 			continue
 		}
@@ -719,6 +722,8 @@ func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 				weibo.Comments, _ = strconv.Atoi(v)
 			case 8:
 				weibo.Origin = getWeibo(v, client)
+			case 9:
+				weibo.Flag = v
 
 			}
 		}
@@ -1078,7 +1083,7 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 	fansofwho, _ := client.SMembers(key)
 	total := len(fansofwho)
 	sort.Strings(fansofwho)
-	fmt.Println(fansofwho)
+	//fmt.Println(fansofwho)
 
 	client.SAdd("all_users", author) //new user inter weibo system
 
@@ -1086,7 +1091,7 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 	allweibo := make(ALL_WeiBO, 0, 50)
 	for _, vv := range weibos {
 		//ls, err := client.HGetAll("weibo_" + vv)
-		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin")
+		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag")
 		if err != nil {
 			continue
 		}
@@ -1126,6 +1131,8 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 				weibo.Comments, _ = strconv.Atoi(v)
 			case 8:
 				weibo.Origin = getWeibo(v, client)
+			case 9:
+				weibo.Flag = v
 
 			}
 		}
@@ -1145,6 +1152,38 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 	b, _ := json.Marshal(jsonres)
 	io.WriteString(w, string(b))
 
+	client.Close()
+}
+
+func flagHandle(w http.ResponseWriter, req *http.Request) {
+	weiboid := req.FormValue("weiboid")
+	class := req.FormValue("class")
+	if len(weiboid) < 1 || len(class) < 1 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
+	}
+
+	var ok bool
+	var client *redis.Client
+	client, ok = clients.Get()
+	if ok != true {
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
+	}
+
+	key := "weibo_" + weiboid
+	client.HSet(key, "flag", class)
+
+	jsonres := JsonResponse{}
+	jsonres.Code = 0
+	jsonres.Message = "Succeeded"
+
+	b, _ := json.Marshal(jsonres)
+	io.WriteString(w, string(b))
 	client.Close()
 }
 
@@ -1188,6 +1227,7 @@ func main() {
 	http.HandleFunc("/userinfo", userInfo)
 	http.HandleFunc("/square", squareHandle)
 	http.HandleFunc("/delete", deleteHandle)
+	http.HandleFunc("/flag", flagHandle)
 
 	http.HandleFunc("/test", testHandle)
 
