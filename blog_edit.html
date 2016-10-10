@@ -42,6 +42,11 @@ var sss = '<div class="container">';
        + '<li class="disabled">'
        + '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=文学">文学</a>'
        + '</li>'
+
+       + '<li class="disabled">'
+      +  '<a href="http://live.66boss.com/weibo/delete?weiboid=idw&login_user=1">删除</a>'
+      +  '</li>'
+
        + '</ul>'
        + '</div> <p>';
 
@@ -66,7 +71,7 @@ $.each(data['data'], function(i, weibo){
   // $("#abc").append("<p>" + weibo.pictures[a] + "</p>");
       
 
-      var temp = '<div class="col-md-2 column"> <img alt="140x140" height="260" width="210"  src="' 
+      var temp = '<div class="col-md-3 column"> <img alt="140x140" height="300" width="260"  src="' 
                + weibo.pictures[a] 
                + '"/></div>';
         result = result + temp;
