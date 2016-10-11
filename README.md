@@ -180,6 +180,7 @@ http://192.168.1.251:8888/checkmy?login_user=1
             "creatime": "2016-09-10 13:38:40",
             "supports": 0,
             "resent": 0,
+            "type": "text"  ##"video"
             "pictures": [
                 "a.jpg",
                 "b.jpg"
@@ -205,9 +206,14 @@ http://192.168.1.251:8888/checkmy?login_user=1
             "creatime": "2016-09-07 17:17:39",
             "supports": 0,
             "resent": 1,
-            "pictures": [
-                "http://192.168.1.251:8888/18856e189b82d9c5d00421c498f7ce61.jpg"
-            ],
+            "type": video"
+            "pictures": [],
+            "video": {
+                      "state": 1/2,  #1-->直播中  2--->结束
+                      “snapshot”: "http://live.66boss.com/weibo/video/a.jpg",
+                      "url": "http://live.66boss.com/weibo/video/abc.mp4",
+                      "type": "live/video" #live-->直播 video--> 小视频
+                     }
             "comments": 0,
             "origin": null,
             "user": {
@@ -497,3 +503,8 @@ http://192.168.1.251:8888/square?login_user=xx
 
 **15 删除自己的微博**
 http://192.168.1.251:8888/delete?login_user=2&weiboid=3
+
+**16 发布直播或者视频**
+ http://192.168.1.251:8888/writev3?author=2&msg=Hello world&liveid=z1.66boss.33adb2
+liveid 字段如果为空，则为小视频，BODY部分必须有视频文件。如果liveid不为空则为发布直播
+Multipart-Form name="file0",name="file1"....name="file8"
