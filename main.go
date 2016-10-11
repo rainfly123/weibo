@@ -1193,6 +1193,8 @@ func main() {
 	logger = log.New(logfile, "\n", log.Ldate|log.Ltime|log.Lshortfile)
 
 	clients.connFn = newcon
+	Channel = make(chan string, 100)
+	go Check_thread()
 
 	var ok bool
 	var client *redis.Client

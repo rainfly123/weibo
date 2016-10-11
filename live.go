@@ -28,7 +28,9 @@ type LIVE struct {
 }
 
 func Checkvideo(redis_key string, filepath string) {
-
+	index := strings.LastIndex(filepath, ".")
+	jpg := filepath[0:index] + "jpg"
+	fmt.Println(jpg)
 }
 
 func Checklive(redis_key string, liveid string) {
@@ -70,12 +72,12 @@ ReCheck:
 }
 
 func Check_thread() {
-	for i := range channel {
+	for i := range Channel {
 		temp := strings.Split(i, "@")
 		redis_key := temp[0]
 		liveid := temp[1]
-		if len(liveid) <= 1 {
-			go Checkvideo(redis_key, filepath)
+		if strings.Contains(liveid, "/") {
+			go Checkvideo(redis_key, liveid)
 		} else {
 			go Checklive(redis_key, liveid)
 		}
