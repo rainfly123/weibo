@@ -31,6 +31,10 @@ func Checkvideo(redis_key string, filepath string) {
 	index := strings.LastIndex(filepath, ".")
 	jpg := filepath[0:index] + "jpg"
 	fmt.Println(jpg)
+	var client *redis.Client
+	client, _ = clients.Get()
+	client.HMSet(redis_key, "state", 2, "snapshot", jpg, "type", "video", "url", filepath)
+	client.Close()
 }
 
 func Checklive(redis_key string, liveid string) {

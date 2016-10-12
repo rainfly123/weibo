@@ -232,7 +232,7 @@ func writev3Handle(w http.ResponseWriter, req *http.Request) {
 			defer file.Close()
 
 			temp := getFileName(head.Filename)
-			uuidFile := UPLOAD_PATH + temp
+			uuidFile := UPLOAD_VIDEO_PATH + temp
 			fW, err := os.Create(uuidFile)
 			if err != nil {
 				jsonres := JsonResponse{2, "system error"}
