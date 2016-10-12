@@ -18,20 +18,28 @@ type JsonResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
+
+type VideoType struct {
+	State    int    `json:"state"`
+	Snapshot string `json:"snapshot"`
+	Type     string `json:"type"`
+	Url      string `json:"url"`
+}
 type WeiBo struct {
-	Weiboid  int      `json:"weiboid"`
-	Concern  bool     `json:"concerned"`
-	Support  bool     `json:"supported"`
-	Msg      string   `json:"msg"`
-	Author   string   `json:"author"`
-	Creatime string   `json:"creatime"`
-	Supports int      `json:"supports"`
-	Resent   int      `json:"resent"`
-	Pictures []string `json:"pictures"`
-	Comments int      `json:"comments"`
-	Origin   *WeiBo   `json:"origin"`
-	Flag     string   `json:"class"`
-	Userinfo User     `json:"user"`
+	Weiboid  int       `json:"weiboid"`
+	Concern  bool      `json:"concerned"`
+	Support  bool      `json:"supported"`
+	Msg      string    `json:"msg"`
+	Author   string    `json:"author"`
+	Creatime string    `json:"creatime"`
+	Supports int       `json:"supports"`
+	Resent   int       `json:"resent"`
+	Pictures []string  `json:"pictures"`
+	Comments int       `json:"comments"`
+	Origin   *WeiBo    `json:"origin"`
+	Flag     string    `json:"class"`
+	Video    VideoType `json:"video"`
+	Userinfo User      `json:"user"`
 }
 
 type User struct {
@@ -187,7 +195,7 @@ func writev2Handle(w http.ResponseWriter, req *http.Request) {
 
 func writev3Handle(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "GET" {
-		io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action=\"writev2?author=%s&liveid=%s&msg=%s\" method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file'/><br/><label><input type=\"submit\" value=\"上传视频\"/></label></form></body></html>", req.FormValue("author"), req.FormValue("msg"), req.FormValue("liveid")))
+		io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action=\"writev3?author=%s&liveid=%s&msg=%s\" method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file'/><br/><label><input type=\"submit\" value=\"上传视频\"/></label></form></body></html>", req.FormValue("author"), req.FormValue("msg"), req.FormValue("liveid")))
 	} else {
 		vtype := "live"
 		access := ""
@@ -707,7 +715,7 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 	allweibo := make(ALL_WeiBO, 0, 5000)
 	for _, vv := range all {
 		//ls, err := client.HGetAll("weibo_" + vv)
-		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag")
+		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video")
 		if err != nil {
 			continue
 		}
@@ -739,6 +747,10 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 				weibo.Origin = getWeibo(v, client)
 			case 9:
 				weibo.Flag = v
+			case 10:
+				if len(v) >= 1 {
+					weibo.Video = getVideoinfo(v, client)
+				}
 			}
 		}
 		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
@@ -785,7 +797,7 @@ func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 	allweibo := make(ALL_WeiBO, 0, 500)
 	for _, vv := range weibos {
 		//ls, err := client.HGetAll("weibo_" + vv)
-		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag")
+		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video")
 		if err != nil {
 			continue
 		}
@@ -816,9 +828,13 @@ func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 				weibo.Origin = getWeibo(v, client)
 			case 9:
 				weibo.Flag = v
-
+			case 10:
+				if len(v) >= 1 {
+					weibo.Video = getVideoinfo(v, client)
+				}
 			}
 		}
+
 		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
 		allweibo = append(allweibo, weibo)
 	}
@@ -886,6 +902,26 @@ func recommend(client *redis.Client) []string {
 	return users
 }
 
+func getVideoinfo(key string, client *redis.Client) VideoType {
+	var video VideoType
+	ls, err := client.HMGet(key, "state", "snapshot", "type", "url")
+	if err != nil {
+		return video
+	}
+	for i, v := range ls {
+		switch i {
+		case 0:
+			video.State = strings.Atoi(v)
+		case 1:
+			video.Snapshot = v
+		case 2:
+			video.Type = v
+		case 3:
+			video.Url = v
+		}
+	}
+	return video
+}
 func getUserinfo(userid string, client *redis.Client, detail bool) User {
 
 	var user User
@@ -1183,7 +1219,7 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 	allweibo := make(ALL_WeiBO, 0, 50)
 	for _, vv := range weibos {
 		//ls, err := client.HGetAll("weibo_" + vv)
-		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag")
+		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video")
 		if err != nil {
 			continue
 		}
@@ -1225,6 +1261,10 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 				weibo.Origin = getWeibo(v, client)
 			case 9:
 				weibo.Flag = v
+			case 10:
+				if len(v) >= 1 {
+					weibo.Video = getVideoinfo(v, client)
+				}
 
 			}
 		}
