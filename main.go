@@ -185,6 +185,98 @@ func writev2Handle(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func writev3Handle(w http.ResponseWriter, req *http.Request) {
+	if req.Method == "GET" {
+		io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action=\"writev2?author=%s&liveid=%s&msg=%s\" method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file'/><br/><label><input type=\"submit\" value=\"上传视频\"/></label></form></body></html>", req.FormValue("author"), req.FormValue("msg"), req.FormValue("liveid")))
+	} else {
+		vtype := "live"
+		access := ""
+		author := req.FormValue("author")
+		msg := req.FormValue("msg")
+		if len(author) < 1 || len(msg) < 3 {
+			jsonres := JsonResponse{1, "argument error"}
+			b, _ := json.Marshal(jsonres)
+			io.WriteString(w, string(b))
+			return
+		}
+
+		var ok bool
+		var client *redis.Client
+		client, ok = clients.Get()
+		if ok != true {
+			jsonres := JsonResponse{2, "system error"}
+			b, _ := json.Marshal(jsonres)
+			io.WriteString(w, string(b))
+			return
+		}
+
+		liveid := req.FormValue("liveid")
+		if len(liveid) < 1 {
+			vtype = "video"
+			file, head, err := req.FormFile("file")
+			if err != nil {
+				jsonres := JsonResponse{1, "argument error"}
+				b, _ := json.Marshal(jsonres)
+				io.WriteString(w, string(b))
+				return
+			}
+			defer file.Close()
+
+			temp := getFileName(head.Filename)
+			uuidFile := UPLOAD_PATH + temp
+			fW, err := os.Create(uuidFile)
+			if err != nil {
+				jsonres := JsonResponse{2, "system error"}
+				b, _ := json.Marshal(jsonres)
+				io.WriteString(w, string(b))
+				return
+			}
+			_, err = io.Copy(fW, file)
+			if err != nil {
+				jsonres := JsonResponse{2, "system error"}
+				b, _ := json.Marshal(jsonres)
+				io.WriteString(w, string(b))
+				return
+			}
+			fW.Close()
+			access = ACCESS_URL + temp
+		}
+
+		strID, _ := client.Get("globalID")
+		key := "weibo_" + strID
+		key_video := key + "_video"
+		now := time.Now().Format("2006-01-02 15:04:05")
+		client.HMSet(key, "weiboid", strID, "msg", msg, "author", author, "creatime", now, "supports", 0, "resent", 0, "video", key_video, "comments", 0)
+		client.LPush("weibo_message", strID)
+		user := "user_" + author + "_weibo"
+		client.LPush(user, strID)
+		client.Incr("globalID")
+
+		snapshot := "http://7xvsyw.com1.z0.glb.clouddn.com/b.jpg"
+		client.HMSet(key_video, "state", 1, "snapshot", snapshot, "type", vtype, "url", "http://66boss.com")
+		Channel <- key_video + "@" + liveid
+
+		type MyResponse struct {
+			JsonResponse
+			Weiboid string `json:"weiboid"`
+			Video   string `json:"Video"`
+		}
+		jsonres := MyResponse{}
+		jsonres.Code = 0
+		jsonres.Message = "Succeeded"
+		jsonres.Weiboid = strID
+		if len(liveid) > 1 {
+			jsonres.Video = liveid
+		} else {
+			jsonres.Video = access
+		}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+
+		client.Close()
+	}
+}
+
 func commentHandle(w http.ResponseWriter, req *http.Request) {
 	author := req.FormValue("login_user")
 	comment := req.FormValue("comment")
@@ -1215,6 +1307,7 @@ func main() {
 	http.HandleFunc("/checksupport", checksupportHandle)
 	http.HandleFunc("/write", writeHandle)
 	http.HandleFunc("/writev2", writev2Handle)
+	http.HandleFunc("/writev3", writev3Handle)
 	http.HandleFunc("/comment", commentHandle)
 	http.HandleFunc("/checkcomment", checkcommentHandle)
 	http.HandleFunc("/supportcomment", supportcommentHandle)
