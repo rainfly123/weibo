@@ -27,6 +27,7 @@ type VideoType struct {
 }
 type WeiBo struct {
 	Weiboid  int       `json:"weiboid"`
+	Type     string    `json:"type"`
 	Concern  bool      `json:"concerned"`
 	Support  bool      `json:"supported"`
 	Msg      string    `json:"msg"`
@@ -750,6 +751,9 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 			case 10:
 				if len(v) >= 1 {
 					weibo.Video = getVideoinfo(v, client)
+					weibo.Type = "video"
+				} else {
+					weibo.Type = "text"
 				}
 			}
 		}
@@ -831,6 +835,9 @@ func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 			case 10:
 				if len(v) >= 1 {
 					weibo.Video = getVideoinfo(v, client)
+					weibo.Type = "video"
+				} else {
+					weibo.Type = "text"
 				}
 			}
 		}
@@ -911,7 +918,7 @@ func getVideoinfo(key string, client *redis.Client) VideoType {
 	for i, v := range ls {
 		switch i {
 		case 0:
-			video.State = strings.Atoi(v)
+			video.State, _ = strconv.Atoi(v)
 		case 1:
 			video.Snapshot = v
 		case 2:
@@ -1264,6 +1271,9 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 			case 10:
 				if len(v) >= 1 {
 					weibo.Video = getVideoinfo(v, client)
+					weibo.Type = "video"
+				} else {
+					weibo.Type = "text"
 				}
 
 			}
