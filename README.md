@@ -180,7 +180,7 @@ http://192.168.1.251:8888/checkmy?login_user=1
             "creatime": "2016-09-10 13:38:40",
             "supports": 0,
             "resent": 0,
-            "type": "text"  ##"video"
+            "type": "text"  或者 "video" 或者 "redpacket"
             "pictures": [
                 "a.jpg",
                 "b.jpg"
@@ -228,6 +228,40 @@ http://192.168.1.251:8888/checkmy?login_user=1
                 "recommend": null
             }
         },
+        {
+         "weiboid": 103,
+         "type": "redpacket",
+         "concerned": true,
+         "supported": false,
+         "msg": "红包",
+         "author": "4",
+         "creatime": "2016-10-13 09:46:50",
+         "supports": 0,
+         "resent": 0,
+         "pictures": null,
+         "comments": 0,
+         "origin": null,
+         "class": "",
+         "video": {
+                  "state": 0,
+                  "snapshot": "",
+                  "type": "",
+         "url": ""
+         },
+         "user": {
+                  "userid": "4",
+                  "concerned": false,
+                  "nickname": "山炮",
+		  "gender": "男",
+		  "location": "沈阳",
+		  "signature": "东北黑土地",
+		  "portrait": "http://7xvsyw.com1.z0.glb.clouddn.com/a.jpeg",
+		  "follower": null,
+		  "following": null,
+		  "recommend": null
+	 },
+         "redpacketid": "3"
+         },
         ]
      }
 ```

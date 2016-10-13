@@ -41,6 +41,7 @@ type WeiBo struct {
 	Flag     string    `json:"class"`
 	Video    VideoType `json:"video"`
 	Userinfo User      `json:"user"`
+	Redevpid string    `json:"redpacketid"`
 }
 
 type User struct {
@@ -284,6 +285,51 @@ func writev3Handle(w http.ResponseWriter, req *http.Request) {
 
 		client.Close()
 	}
+}
+
+func writev4Handle(w http.ResponseWriter, req *http.Request) {
+	author := req.FormValue("author")
+	msg := req.FormValue("msg")
+	redpacketid := req.FormValue("redpacketid")
+	if len(author) < 1 || len(msg) < 3 || len(redpacketid) < 1 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
+	}
+
+	var ok bool
+	var client *redis.Client
+	client, ok = clients.Get()
+	if ok != true {
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
+	}
+
+	strID, _ := client.Get("globalID")
+	key := "weibo_" + strID
+	now := time.Now().Format("2006-01-02 15:04:05")
+	client.HMSet(key, "weiboid", strID, "msg", msg, "author", author, "creatime", now, "supports", 0, "resent", 0, "redpacketid", redpacketid, "comments", 0)
+	client.LPush("weibo_message", strID)
+	user := "user_" + author + "_weibo"
+	client.LPush(user, strID)
+	client.Incr("globalID")
+
+	type MyResponse struct {
+		JsonResponse
+		Weiboid  string `json:"weiboid"`
+		Redevpid string `json:"redpacketid"`
+	}
+	jsonres := MyResponse{}
+	jsonres.Code = 0
+	jsonres.Message = "Succeeded"
+	jsonres.Weiboid = strID
+	jsonres.Redevpid = redpacketid
+	b, _ := json.Marshal(jsonres)
+	io.WriteString(w, string(b))
+	client.Close()
 }
 
 func commentHandle(w http.ResponseWriter, req *http.Request) {
@@ -716,7 +762,7 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 	allweibo := make(ALL_WeiBO, 0, 5000)
 	for _, vv := range all {
 		//ls, err := client.HGetAll("weibo_" + vv)
-		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video")
+		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video", "redpacketid")
 		if err != nil {
 			continue
 		}
@@ -754,6 +800,12 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 					weibo.Type = "video"
 				} else {
 					weibo.Type = "text"
+				}
+
+			case 11:
+				if len(v) >= 1 {
+					weibo.Redevpid = v
+					weibo.Type = "redpacket"
 				}
 			}
 		}
@@ -801,7 +853,7 @@ func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 	allweibo := make(ALL_WeiBO, 0, 500)
 	for _, vv := range weibos {
 		//ls, err := client.HGetAll("weibo_" + vv)
-		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video")
+		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video", "redpacketid")
 		if err != nil {
 			continue
 		}
@@ -838,6 +890,11 @@ func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 					weibo.Type = "video"
 				} else {
 					weibo.Type = "text"
+				}
+			case 11:
+				if len(v) >= 1 {
+					weibo.Redevpid = v
+					weibo.Type = "redpacket"
 				}
 			}
 		}
@@ -1226,7 +1283,7 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 	allweibo := make(ALL_WeiBO, 0, 50)
 	for _, vv := range weibos {
 		//ls, err := client.HGetAll("weibo_" + vv)
-		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video")
+		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video", "redpacketid")
 		if err != nil {
 			continue
 		}
@@ -1275,7 +1332,11 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 				} else {
 					weibo.Type = "text"
 				}
-
+			case 11:
+				if len(v) >= 1 {
+					weibo.Redevpid = v
+					weibo.Type = "redpacket"
+				}
 			}
 		}
 		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
@@ -1358,6 +1419,7 @@ func main() {
 	http.HandleFunc("/write", writeHandle)
 	http.HandleFunc("/writev2", writev2Handle)
 	http.HandleFunc("/writev3", writev3Handle)
+	http.HandleFunc("/writev4", writev4Handle)
 	http.HandleFunc("/comment", commentHandle)
 	http.HandleFunc("/checkcomment", checkcommentHandle)
 	http.HandleFunc("/supportcomment", supportcommentHandle)
