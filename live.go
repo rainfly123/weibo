@@ -6,6 +6,9 @@ import (
 	"io/ioutil"
 	"menteslibres.net/gosexy/redis"
 	"net/http"
+	//	"os"
+	"os/exec"
+	"path"
 	"strings"
 	"time"
 )
@@ -27,13 +30,26 @@ type LIVE struct {
 	Startime         string
 }
 
-func Checkvideo(redis_key string, filepath string) {
-	index := strings.LastIndex(filepath, ".")
-	jpg := filepath[0:index] + "jpg"
-	fmt.Println(jpg)
+func Checkvideo(redis_key string, origin string) {
+
+	var snapshot string
+	snapshot = "http://7xvsyw.com1.z0.glb.clouddn.com/c.jpg"
+	index := strings.LastIndex(origin, ".")
+	if index > 0 {
+		dest := origin[0:index+1] + "jpg"
+		var args = []string{"-i", origin, "-vframes", "1", "-s", "600x300", "-f", "image2", "-y", dest}
+		cmd := exec.Command("ffmpeg", args[0:]...)
+		//cmd.Stdout = os.Stdout
+		//cmd.Stderr = os.Stderr
+		err := cmd.Run()
+		if err == nil {
+			snapshot = ACCESS_VIDEO_URL + path.Base(dest)
+		}
+	}
+	videoaccess := ACCESS_VIDEO_URL + path.Base(origin)
 	var client *redis.Client
 	client, _ = clients.Get()
-	client.HMSet(redis_key, "state", 2, "snapshot", jpg, "type", "video", "url", filepath)
+	client.HMSet(redis_key, "state", 2, "snapshot", snapshot, "type", "video", "url", videoaccess)
 	client.Close()
 }
 

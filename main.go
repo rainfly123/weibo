@@ -197,10 +197,10 @@ func writev2Handle(w http.ResponseWriter, req *http.Request) {
 
 func writev3Handle(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "GET" {
-		io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action=\"writev3?author=%s&liveid=%s&msg=%s\" method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file'/><br/><label><input type=\"submit\" value=\"上传视频\"/></label></form></body></html>", req.FormValue("author"), req.FormValue("msg"), req.FormValue("liveid")))
+		io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action=\"writev3?author=%s&liveid=%s&msg=%s\" method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file'/><br/><label><input type=\"submit\" value=\"上传视频\"/></label></form></body></html>", req.FormValue("author"), req.FormValue("liveid"), req.FormValue("msg")))
 	} else {
 		vtype := "live"
-		access := ""
+		var access string
 		author := req.FormValue("author")
 		msg := req.FormValue("msg")
 		if len(author) < 1 || len(msg) < 3 {
@@ -234,6 +234,7 @@ func writev3Handle(w http.ResponseWriter, req *http.Request) {
 
 			temp := getFileName(head.Filename)
 			uuidFile := UPLOAD_VIDEO_PATH + temp
+			liveid = uuidFile
 			fW, err := os.Create(uuidFile)
 			if err != nil {
 				jsonres := JsonResponse{2, "system error"}
@@ -249,7 +250,7 @@ func writev3Handle(w http.ResponseWriter, req *http.Request) {
 				return
 			}
 			fW.Close()
-			access = ACCESS_URL + temp
+			access = ACCESS_VIDEO_URL + temp
 		}
 
 		strID, _ := client.Get("globalID")
@@ -265,6 +266,9 @@ func writev3Handle(w http.ResponseWriter, req *http.Request) {
 		snapshot := "http://7xvsyw.com1.z0.glb.clouddn.com/b.jpg"
 		client.HMSet(key_video, "state", 1, "snapshot", snapshot, "type", vtype, "url", "http://66boss.com")
 		Channel <- key_video + "@" + liveid
+		if strings.Contains(liveid, "/") {
+			liveid = access
+		}
 
 		type MyResponse struct {
 			JsonResponse
@@ -275,11 +279,7 @@ func writev3Handle(w http.ResponseWriter, req *http.Request) {
 		jsonres.Code = 0
 		jsonres.Message = "Succeeded"
 		jsonres.Weiboid = strID
-		if len(liveid) > 1 {
-			jsonres.Video = liveid
-		} else {
-			jsonres.Video = access
-		}
+		jsonres.Video = liveid
 		b, _ := json.Marshal(jsonres)
 		io.WriteString(w, string(b))
 
@@ -1435,10 +1435,9 @@ func main() {
 	http.HandleFunc("/square", squareHandle)
 	http.HandleFunc("/delete", deleteHandle)
 	http.HandleFunc("/flag", flagHandle)
-
 	http.HandleFunc("/test", testHandle)
 
-	http.Handle("/", http.FileServer(http.Dir("./upload/")))
+	http.Handle("/", http.FileServer(http.Dir("./upload")))
 
 	if err := http.ListenAndServe(":8888", nil); err != nil {
 	}

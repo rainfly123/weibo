@@ -18,6 +18,7 @@ const (
 	UPLOAD_PATH       string = "./upload/"
 	UPLOAD_VIDEO_PATH string = "./video/"
 	ACCESS_URL        string = "http://192.168.1.251:8888/"
+	ACCESS_VIDEO_URL  string = "http://192.168.1.251:8888/video/"
 )
 
 func compress(name string) {
