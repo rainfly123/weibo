@@ -712,9 +712,18 @@ func deleteHandle(w http.ResponseWriter, req *http.Request) {
 
 	key := "weibo_message"
 	client.LRem(key, 0, weiboid)
-	key = "user_" + login_user + "_weibo"
-	client.LRem(key, 0, weiboid)
 	key = "weibo_" + weiboid
+	if login_user == "1" {
+		ls, err := client.HMGet(key, "author")
+		if err == nil {
+			author := ls[0]
+			key = "user_" + author + "_weibo"
+			client.LRem(key, 0, weiboid)
+		}
+	} else {
+		key = "user_" + login_user + "_weibo"
+		client.LRem(key, 0, weiboid)
+	}
 	client.Del(key)
 
 	jsonres := JsonResponse{}
