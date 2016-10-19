@@ -546,3 +546,6 @@ Multipart-Form name="file"
 **17 发红包**
  http://192.168.1.251:8888/writev4?author=2&msg=Hello world&redpacketid=xxx
 
+
+**18 广场带过滤参数 (军事、商家、科学、文学、社会、政治、名人、财经 **
+http://192.168.1.251:8888/squarefilter?login_user=xx&class=名人
