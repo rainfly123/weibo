@@ -1348,7 +1348,7 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 				}
 			}
 		}
-		if strings.Contains(weibo.Video.url, "abcdefg") {
+		if strings.Contains(weibo.Video.Url, "abcdefg") {
 			continue
 		}
 		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
@@ -1461,7 +1461,7 @@ func filterHandle(w http.ResponseWriter, req *http.Request) {
 				}
 			}
 		}
-		if strings.Contains(weibo.Video.url, "abcdefg") {
+		if strings.Contains(weibo.Video.Url, "abcdefg") {
 			continue
 		}
 		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
