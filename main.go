@@ -264,7 +264,7 @@ func writev3Handle(w http.ResponseWriter, req *http.Request) {
 		client.Incr("globalID")
 
 		snapshot := "http://7xvsyw.com1.z0.glb.clouddn.com/b.jpg"
-		client.HMSet(key_video, "state", 1, "snapshot", snapshot, "type", vtype, "url", "http://66boss.com")
+		client.HMSet(key_video, "state", 1, "snapshot", snapshot, "type", vtype, "url", "abcdefg")
 		Channel <- key_video + "@" + liveid
 		if strings.Contains(liveid, "/") {
 			liveid = access
@@ -1348,6 +1348,9 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 				}
 			}
 		}
+		if strings.Contains(weibo.Video.url, "abcdefg") {
+			continue
+		}
 		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
 		allweibo = append(allweibo, weibo)
 	}
@@ -1457,6 +1460,9 @@ func filterHandle(w http.ResponseWriter, req *http.Request) {
 					weibo.Type = "redpacket"
 				}
 			}
+		}
+		if strings.Contains(weibo.Video.url, "abcdefg") {
+			continue
 		}
 		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
 		allweibo = append(allweibo, weibo)
