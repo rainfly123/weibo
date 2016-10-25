@@ -13,14 +13,14 @@ having the following features:
 ##These are Weibo API list Summary
 
 **1 点赞**
-http://192.168.1.251:8888/support?login_user=2&weiboid=3
+http://live.66boss.com/weibo/support?login_user=2&weiboid=3
 
 
 **1.1 取消点赞**
-http://192.168.1.251:8888/unsupport?login_user=2&weiboid=3
+http://live.66boss.com/weibo/unsupport?login_user=2&weiboid=3
 
 **2 查询点赞**
-http://192.168.1.251:8888/checksupport?&weiboid=3
+http://live.66boss.com/weibo/checksupport?&weiboid=3
 返回点赞者列表JSON
 ```
 {
@@ -44,7 +44,7 @@ http://192.168.1.251:8888/checksupport?&weiboid=3
             "gender": "男",
             "location": "北京",
             "signature": "万里长城永不倒",
-            "portrait": "http://192.168.1.251:8888/44f4c56e25508cfa2909918e599a590b.jpg",
+            "portrait": "http://live.66boss.com/weibo/44f4c56e25508cfa2909918e599a590b.jpg",
             "follower": null,
             "following": null,
             "recommend": null
@@ -98,13 +98,13 @@ http://192.168.1.251:8888/checksupport?&weiboid=3
 ```
 
 **3 评论**
-http://192.168.1.251:8888/comment?login_user=2&weiboid=3&comment=%E6%A5%BC%E4%B8%BB%E5%84%BF%E5%82%BB%E9%80%BC
+http://live.66boss.com/weibo/comment?login_user=2&weiboid=3&comment=%E6%A5%BC%E4%B8%BB%E5%84%BF%E5%82%BB%E9%80%BC
 
 **3.1 点赞评论**
-http://192.168.1.251:8888/supportcomment?weiboid=3&commentid=2&login_user=x
+http://live.66boss.com/weibo/supportcomment?weiboid=3&commentid=2&login_user=x
 
 **4 查询评论**
-http://192.168.1.251:8888/checkcomment?weiboid=3&login_user=x
+http://live.66boss.com/weibo/checkcomment?weiboid=3&login_user=x
 `
 返回评论列表JSON																	
 ```
@@ -152,21 +152,21 @@ http://192.168.1.251:8888/checkcomment?weiboid=3&login_user=x
 }
 ```
 **5 写微博**
-http://192.168.1.251:8888/writev2?
+http://live.66boss.com/weibo/writev2?
 author=2&msg=%E4%BD%A0%E5%A5%BD%E6%88%91%E6%98%AF2%E5%8F%B7%E7%AC%A8%E8%9B%8B
 Multipart-Form   name="file0",name="file1"....name="file8"
 
 
 **6 关注**
-http://192.168.1.251:8888/concern?login_user=1&concern=2
+http://live.66boss.com/weibo/concern?login_user=1&concern=2
 用户1，关注用户2，成为其粉丝
 
 **7 取消关注**
-http://192.168.1.251:8888/cancelconcern?login_user=1&cancel=2
+http://live.66boss.com/weibo/cancelconcern?login_user=1&cancel=2
 用户1，取消关注用户2，不在是其粉丝
 
 **8 查询自己的微博**
-http://192.168.1.251:8888/checkmy?login_user=1
+http://live.66boss.com/weibo/checkmy?login_user=1
 返回列表JSON
 ```
 {
@@ -193,7 +193,7 @@ http://192.168.1.251:8888/checkmy?login_user=1
                 "gender": "男",
                 "location": "北京",
                 "signature": "万里长城永不倒",
-                "portrait": "http://192.168.1.251:8888/44f4c56e25508cfa2909918e599a590b.jpg",
+                "portrait": "http://live.66boss.com/weibo/44f4c56e25508cfa2909918e599a590b.jpg",
                 "follower": null,
                 "following": null,
                 "recommend": null
@@ -222,7 +222,7 @@ http://192.168.1.251:8888/checkmy?login_user=1
                 "gender": "男",
                 "location": "北京",
                 "signature": "万里长城永不倒",
-                "portrait": "http://192.168.1.251:8888/44f4c56e25508cfa2909918e599a590b.jpg",
+                "portrait": "http://live.66boss.com/weibo/44f4c56e25508cfa2909918e599a590b.jpg",
                 "follower": null,
                 "following": null,
                 "recommend": null
@@ -267,7 +267,7 @@ http://192.168.1.251:8888/checkmy?login_user=1
 ```
 
 **9 查询自己关注的人的微博**
-http://192.168.1.251:8888/check?login_user=1
+http://live.66boss.com/weibo/check?login_user=1
 
 返回自己关注的人的最新微博
 
@@ -296,7 +296,7 @@ http://192.168.1.251:8888/check?login_user=1
                 "gender": "男",
                 "location": "北京",
                 "signature": "万里长城永不倒",
-                "portrait": "http://192.168.1.251:8888/44f4c56e25508cfa2909918e599a590b.jpg",
+                "portrait": "http://live.66boss.com/weibo/44f4c56e25508cfa2909918e599a590b.jpg",
                 "follower": null,
                 "following": null,
                 "recommend": null
@@ -310,7 +310,7 @@ http://192.168.1.251:8888/check?login_user=1
             "supports": 0,
             "resent": 1,
             "pictures": [
-                "http://192.168.1.251:8888/18856e189b82d9c5d00421c498f7ce61.jpg"
+                "http://live.66boss.com/weibo/18856e189b82d9c5d00421c498f7ce61.jpg"
             ],
             "comments": 0,
             "origin": null,
@@ -320,7 +320,7 @@ http://192.168.1.251:8888/check?login_user=1
                 "gender": "男",
                 "location": "北京",
                 "signature": "万里长城永不倒",
-                "portrait": "http://192.168.1.251:8888/44f4c56e25508cfa2909918e599a590b.jpg",
+                "portrait": "http://live.66boss.com/weibo/44f4c56e25508cfa2909918e599a590b.jpg",
                 "follower": null,
                 "following": null,
                 "recommend": null
@@ -331,18 +331,18 @@ http://192.168.1.251:8888/check?login_user=1
 ```
 
 **10 更新用户资料**
-http://192.168.1.251:8888/profile?login_user=xx&nickname=xxx&gender=xx&location=xx&signature=xxx
+http://live.66boss.com/weibo/profile?login_user=xx&nickname=xxx&gender=xx&location=xx&signature=xxx
 
 **11 更新头像**
-http://192.168.1.251:8888/portrait?login_user=xxx    FORM multi-part 传输 ,name="file"
+http://live.66boss.com/weibo/portrait?login_user=xxx    FORM multi-part 传输 ,name="file"
 返回
-{"code":0,"message":"Succeeded","Data":"http://192.168.1.251:8888/f6bd529a64de3832a00912a550ed5fae.jpg"}
+{"code":0,"message":"Succeeded","Data":"http://live.66boss.com/weibo/f6bd529a64de3832a00912a550ed5fae.jpg"}
 
 **12 转发微博**
-http://192.168.1.251:8888/forward?login_user=xxx&msg=你好&origin=xxx  （origin原微博ID）
+http://live.66boss.com/weibo/forward?login_user=xxx&msg=你好&origin=xxx  （origin原微博ID）
 
 **13 查询用户信息**
-http://192.168.1.251:8888/userinfo?userid=x&login_user=xx  含推荐
+http://live.66boss.com/weibo/userinfo?userid=x&login_user=xx  含推荐
 ```
 返回用户信息
 {
@@ -355,7 +355,7 @@ http://192.168.1.251:8888/userinfo?userid=x&login_user=xx  含推荐
     "gender": "男",
     "location": "北京",
     "signature": "我是圣人",
-    "portrait": "http://192.168.1.251:8888/c086a66d2d3925ae2c015f5647200761.jpg",
+    "portrait": "http://live.66boss.com/weibo/c086a66d2d3925ae2c015f5647200761.jpg",
     "follower": [
         {
             "Userid": "1",
@@ -404,7 +404,7 @@ http://192.168.1.251:8888/userinfo?userid=x&login_user=xx  含推荐
             "Gender": "女",
             "Location": "昆明",
             "Signature": "滇池喂鸟",
-            "Portrait": "http://192.168.1.251:8888/52b0d4fa3eae0814dae50d0d7ac3700a.jpg",
+            "Portrait": "http://live.66boss.com/weibo/52b0d4fa3eae0814dae50d0d7ac3700a.jpg",
             "Follower": null,
             "Following": null,
             "Recommend": null
@@ -426,7 +426,7 @@ http://192.168.1.251:8888/userinfo?userid=x&login_user=xx  含推荐
 ```
 
 **14 查询广场**
-http://192.168.1.251:8888/square?login_user=xx
+http://live.66boss.com/weibo/square?login_user=xx
 返回：
 ```
 {
@@ -477,7 +477,7 @@ http://192.168.1.251:8888/square?login_user=xx
             "Gender": "女",
             "Location": "昆明",
             "Signature": "滇池喂鸟",
-            "Portrait": "http://192.168.1.251:8888/52b0d4fa3eae0814dae50d0d7ac3700a.jpg",
+            "Portrait": "http://live.66boss.com/weibo/52b0d4fa3eae0814dae50d0d7ac3700a.jpg",
             "Follower": null,
             "Following": null,
             "Recommend": null
@@ -525,7 +525,7 @@ http://192.168.1.251:8888/square?login_user=xx
             "Gender": "男",
             "Location": "北京",
             "Signature": "我是圣人",
-            "Portrait": "http://192.168.1.251:8888/c086a66d2d3925ae2c015f5647200761.jpg",
+            "Portrait": "http://live.66boss.com/weibo/c086a66d2d3925ae2c015f5647200761.jpg",
             "Follower": null,
             "Following": null,
             "Recommend": null
@@ -536,22 +536,22 @@ http://192.168.1.251:8888/square?login_user=xx
 ```
 
 **15 删除自己的微博**
-http://192.168.1.251:8888/delete?login_user=2&weiboid=3
+http://live.66boss.com/weibo/delete?login_user=2&weiboid=3
 
 **16 发布直播或者视频**
- http://192.168.1.251:8888/writev3?author=2&msg=Hello world&liveid=z1.66boss.33adb2
+ http://live.66boss.com/weibo/writev3?author=2&msg=Hello world&liveid=z1.66boss.33adb2
 liveid 字段如果为空，则为小视频，BODY部分必须有视频文件。如果liveid不为空则为发布直播
 Multipart-Form name="file"
 
 **17 发红包**
- http://192.168.1.251:8888/writev4?author=2&msg=Hello world&redpacketid=xxx
+ http://live.66boss.com/weibo/writev4?author=2&msg=Hello world&redpacketid=xxx
 
 
 **18 广场带过滤参数 (军事、商家、科学、文学、社会、政治、名人、财经**
-http://192.168.1.251:8888/squarefilter?login_user=xx&class=名人
+http://live.66boss.com/weibo/squarefilter?login_user=xx&class=名人
 
 **19  查询分类名称**
-http://192.168.1.251:8888/queryclass
+http://live.66boss.com/weibo/queryclass
 
 ```
 {
