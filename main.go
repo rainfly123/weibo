@@ -1515,6 +1515,24 @@ func flagHandle(w http.ResponseWriter, req *http.Request) {
 	client.Close()
 }
 
+func classHandle(w http.ResponseWriter, req *http.Request) {
+	var classname = [...]string{"商家", "政治", "军事", "财经", "社会", "文学", "名人", "电影", "旅游"}
+	type MyResponse struct {
+		JsonResponse
+		Class []string `json:"class"`
+		Total int      `json:"total"`
+	}
+	jsonres := MyResponse{}
+
+	jsonres.Code = 0
+	jsonres.Message = "Succeeded"
+	jsonres.Class = classname[:]
+	jsonres.Total = len(classname)
+
+	b, _ := json.Marshal(jsonres)
+	io.WriteString(w, string(b))
+}
+
 func main() {
 
 	logfile, _ := os.OpenFile("./weibo.log", os.O_RDWR|os.O_CREATE, 0)
@@ -1561,6 +1579,7 @@ func main() {
 	http.HandleFunc("/squarefilter", filterHandle)
 	http.HandleFunc("/delete", deleteHandle)
 	http.HandleFunc("/flag", flagHandle)
+	http.HandleFunc("/queryclass", classHandle)
 	http.HandleFunc("/test", testHandle)
 
 	http.Handle("/", http.FileServer(http.Dir("./upload")))

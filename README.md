@@ -549,3 +549,26 @@ Multipart-Form name="file"
 
 **18 广场带过滤参数 (军事、商家、科学、文学、社会、政治、名人、财经**
 http://192.168.1.251:8888/squarefilter?login_user=xx&class=名人
+
+**19  查询分类名称**
+http://192.168.1.251:8888/queryclass
+
+```
+{
+"code": 0,
+"message": "Succeeded",
+"class": [
+"商家",
+"政治",
+"军事",
+"财经",
+"社会",
+"文学",
+"名人",
+"电影",
+"旅游"
+],
+"total": 9
+}
+```
+
