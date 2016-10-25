@@ -658,7 +658,7 @@ func getWeibo(weiboid string, client *redis.Client) *WeiBo {
 		return nil
 	}
 	//	ls, err := client.HGetAll("weibo_" + weiboid)
-	ls, err := client.HMGet("weibo_"+weiboid, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin")
+	ls, err := client.HMGet("weibo_"+weiboid, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video", "redpacketid")
 	if err != nil {
 		return nil
 	}
@@ -684,6 +684,21 @@ func getWeibo(weiboid string, client *redis.Client) *WeiBo {
 			}
 		case 7:
 			weibo.Comments, _ = strconv.Atoi(v)
+		case 9:
+			weibo.Flag = v
+		case 10:
+			if len(v) >= 1 {
+				weibo.Video = getVideoinfo(v, client)
+				weibo.Type = "video"
+			} else {
+				weibo.Type = "text"
+			}
+
+		case 11:
+			if len(v) >= 1 {
+				weibo.Redevpid = v
+				weibo.Type = "redpacket"
+			}
 		}
 	}
 	weibo.Userinfo = getUserinfo(weibo.Author, client, false)
@@ -819,6 +834,9 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
+		if weibo.Origin != nil {
+			weibo.Type = weibo.Origin.Type
+		}
 		allweibo = append(allweibo, weibo)
 	}
 	sort.Sort(allweibo)
@@ -909,6 +927,9 @@ func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 		}
 
 		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
+		if weibo.Origin != nil {
+			weibo.Type = weibo.Origin.Type
+		}
 		allweibo = append(allweibo, weibo)
 	}
 	//sort.Sort(allweibo)
@@ -1352,6 +1373,9 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 			continue
 		}
 		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
+		if weibo.Origin != nil {
+			weibo.Type = weibo.Origin.Type
+		}
 		allweibo = append(allweibo, weibo)
 	}
 	//sort.Sort(allweibo)
