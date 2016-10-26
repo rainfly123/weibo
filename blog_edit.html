@@ -12,6 +12,17 @@
 </div>
 
 <script>
+function mydelete(weiboid)
+{
+   url = "http://live.66boss.com/weibo/delete?weiboid=" + weiboid + "&login_user=1" ;
+   $.getJSON(url, function(data){}) ;
+   window.location.reload();
+}
+function myflag(weiboid, flag)
+{
+   url = "http://live.66boss.com/weibo/flag?weiboid=" + weiboid + "&class=" + flag;
+   $.getJSON(url, function(data){}) ;
+}
 var sss = '<div class="container">';
  var  str1 = '<div class="row clearfix">'
       + '<div class="col-md-12 column"> <div class="btn-group">'
@@ -20,43 +31,51 @@ var sss = '<div class="container">';
      +  '<span class="caret"></span></button>'
      +  '<ul class="dropdown-menu">'
      +  '<li class="disabled">'
-      + '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=军事">军事</a>'
+      + '<a href="#idw" onclick=\'myflag(idw, "军事")\'>军事</a>'
       +  '</li>'
      +   '<li class="disabled">'
-      +  '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=名人">名人</a>'
+      + '<a href="#idw" onclick=\'myflag(idw, "名人")\'>名人</a>'
       +  '</li>'
 
        + '<li class="disabled">'
-      +  '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=财经">财经</a>'
+      + '<a href="#idw" onclick=\'myflag(idw, "财经")\'>财经</a>'
       +  '</li>'
 
        + '<li class="disabled">'
-      +  '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=科学">科学</a>'
+      + '<a href="#idw" onclick=\'myflag(idw, "电影")\'>电影</a>'
+      +  '</li>'
+
+       + '<li class="disabled">'
+      + '<a href="#idw" onclick=\'myflag(idw, "旅游")\'>旅游</a>'
+      +  '</li>'
+
+       + '<li class="disabled">'
+      + '<a href="#idw" onclick=\'myflag(idw, "科学")\'>科学</a>'
       +  '</li>'
 
 
        + '<li class="disabled">'
-      +  '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=商家">商家</a>'
+      + '<a href="#idw" onclick=\'myflag(idw, "商家")\'>商家</a>'
       +  '</li>'
 
        + '<li class="disabled">'
-       + '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=文学">文学</a>'
+      + '<a href="#idw" onclick=\'myflag(idw, "文学")\'>文学</a>'
        + '</li>'
 
        + '<li class="disabled">'
-       + '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=社会">社会</a>'
+      + '<a href="#idw" onclick=\'myflag(idw, "社会")\'>社会</a>'
        + '</li>'
 
        + '<li class="disabled">'
-       + '<a href="http://live.66boss.com/weibo/flag?weiboid=idw&class=政治">政治</a>'
+      + '<a href="#idw" onclick=\'myflag(idw, "政治")\'>政治</a>'
        + '</li>'
 
        + '<li class="disabled">'
-       + '<a href="http://live.66boss.com/weibo/delete?weiboid=idw&login_user=1">删除</a>'
+       + '<a href="#" onclick="mydelete(idw)">删除</a>'
        + '</li>'
 
        + '</ul>'
-       + '</div> <p>';
+       + '</div> <p id="idw">';
 
  var str2 = '</p>';
  var str3 = '<div class="row clearfix">';
