@@ -557,7 +557,7 @@ http://live.66boss.com/weibo/queryclass
 {
 "code": 0,
 "message": "Succeeded",
-"class": [
+"data": [
 "商家",
 "政治",
 "军事",
