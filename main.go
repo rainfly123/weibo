@@ -1423,7 +1423,7 @@ func filterHandle(w http.ResponseWriter, req *http.Request) {
 	client.SAdd("all_users", author) //new user inter weibo system
 
 	weibos, _ := client.LRange("weibo_message", 0, 50)
-	allweibo := make(ALL_WeiBO, 0, 50)
+	allweibo := make(ALL_WeiBO, 0, 100)
 	for _, vv := range weibos {
 		//ls, err := client.HGetAll("weibo_" + vv)
 		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video", "redpacketid")
