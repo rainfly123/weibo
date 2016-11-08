@@ -311,7 +311,7 @@ func writev4Handle(w http.ResponseWriter, req *http.Request) {
 	strID, _ := client.Get("globalID")
 	key := "weibo_" + strID
 	now := time.Now().Format("2006-01-02 15:04:05")
-	client.HMSet(key, "weiboid", strID, "msg", msg, "author", author, "creatime", now, "supports", 0, "resent", 0, "redpacketid", redpacketid, "comments", 0)
+	client.HMSet(key, "weiboid", strID, "msg", msg, "author", author, "creatime", now, "supports", 0, "resent", 0, "redpacketid", redpacketid, "comments", 0, "flag", "红包")
 	client.LPush("weibo_message", strID)
 	user := "user_" + author + "_weibo"
 	client.LPush(user, strID)
@@ -832,6 +832,9 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 					weibo.Type = "redpacket"
 				}
 			}
+		}
+		if strings.Contains(weibo.Video.Url, "abcdefg") {
+			continue
 		}
 		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
 		if weibo.Origin != nil {
