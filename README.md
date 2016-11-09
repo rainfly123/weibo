@@ -572,3 +572,5 @@ http://live.66boss.com/weibo/queryclass
 }
 ```
 
+**20 设置分类**
+http://live.66boss.com/weibo/flag?weiboid=xx&class=名人
