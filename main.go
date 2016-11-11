@@ -223,6 +223,13 @@ func writev3Handle(w http.ResponseWriter, req *http.Request) {
 		liveid := req.FormValue("liveid")
 		if len(liveid) < 1 {
 			vtype = "video"
+			filesize, _ := strconv.Atoi(req.Header.Get("Content-Length"))
+			if filesize/1024/1024 > 20 {
+				jsonres := JsonResponse{3, "视频文件过大"}
+				b, _ := json.Marshal(jsonres)
+				io.WriteString(w, string(b))
+				return
+			}
 			file, head, err := req.FormFile("file")
 			if err != nil {
 				jsonres := JsonResponse{1, "argument error"}
