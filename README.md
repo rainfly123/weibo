@@ -153,7 +153,7 @@ http://live.66boss.com/weibo/checkcomment?weiboid=3&login_user=x
 ```
 **5 写微博**
 http://live.66boss.com/weibo/writev2?
-author=2&msg=%E4%BD%A0%E5%A5%BD%E6%88%91%E6%98%AF2%E5%8F%B7%E7%AC%A8%E8%9B%8B
+author=2&msg=%E4%BD%A0%E5%A5%BD%E6%88%91%E6%98%AF2%E5%8F%B7%E7%AC%A8%E8%9B%8B&shop=1/0 是否是商家，不提供则不是商家
 Multipart-Form   name="file0",name="file1"....name="file8"
 
 

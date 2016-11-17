@@ -1556,7 +1556,7 @@ func flagHandle(w http.ResponseWriter, req *http.Request) {
 }
 
 func classHandle(w http.ResponseWriter, req *http.Request) {
-	var classname = [...]string{"红包", "商家", "政治", "军事", "财经", "社会", "文学", "名人", "电影", "旅游"}
+	var classname = [...]string{"红包", "商家", "娱乐", "幽默", "政治", "军事", "财经", "社会", "文学", "名人", "电影", "旅游"}
 	type MyResponse struct {
 		JsonResponse
 		Class []string `json:"data"`
