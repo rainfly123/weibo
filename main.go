@@ -57,6 +57,8 @@ type User struct {
 	Recommend []User `json:"recommend"`
 }
 
+var LimitAmout = map[string]uint32{}
+
 type ALL_WeiBO []WeiBo
 
 func (list ALL_WeiBO) Len() int {
@@ -73,6 +75,19 @@ var logger *log.Logger
 var host = "192.168.1.251"
 var port = uint(6379)
 var clients redisPool
+
+func checklimit(author string) bool {
+	amount, ok := LimitAmout[author]
+	if ok {
+		if amount >= 1 {
+			return true
+		}
+	} else {
+
+		LimitAmout[author] = 1
+	}
+	return false
+}
 
 func writeHandle(w http.ResponseWriter, req *http.Request) {
 	author := req.FormValue("author")
@@ -135,7 +150,7 @@ func receiveFile(w http.ResponseWriter, req *http.Request, name string) string {
 
 func writev2Handle(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "GET" {
-		io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action=\"writev2?author=%s&msg=%s\" method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file0'/><br/><input type=\"file\" name='file1'/><br/><input type=\"file\" name='file2'/><br/><<input type=\"file\" name='file3'/><br/><<input type=\"file\" name='file4'/><br/><<input type=\"file\" name='file5'/><br/><<input type=\"file\" name='file6'/><br/><<input type=\"file\" name='file7'/><br/><<input type=\"file\" name='file8'/><br/><<label><input type=\"submit\" value=\"上传图片\"/></label></form></body></html>", req.FormValue("author"), req.FormValue("msg")))
+		io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action=\"writev2?author=%s&msg=%s&shop=%s\" method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file0'/><br/><input type=\"file\" name='file1'/><br/><input type=\"file\" name='file2'/><br/><<input type=\"file\" name='file3'/><br/><<input type=\"file\" name='file4'/><br/><<input type=\"file\" name='file5'/><br/><<input type=\"file\" name='file6'/><br/><<input type=\"file\" name='file7'/><br/><<input type=\"file\" name='file8'/><br/><<label><input type=\"submit\" value=\"上传图片\"/></label></form></body></html>", req.FormValue("author"), req.FormValue("msg"), req.FormValue("shop")))
 	} else {
 		var pictures []string
 		for i := 0; i < 9; i++ {
@@ -151,13 +166,24 @@ func writev2Handle(w http.ResponseWriter, req *http.Request) {
 
 		author := req.FormValue("author")
 		msg := req.FormValue("msg")
+		shop := req.FormValue("shop")
 		if len(author) < 1 || len(msg) < 3 {
 			jsonres := JsonResponse{1, "argument error"}
 			b, _ := json.Marshal(jsonres)
 			io.WriteString(w, string(b))
 			return
 		}
-
+		if len(shop) < 1 {
+			shop = "0"
+		}
+		if shop == "1" {
+			if checklimit(author) {
+				jsonres := JsonResponse{5, "达到每日发表上限"}
+				b, _ := json.Marshal(jsonres)
+				io.WriteString(w, string(b))
+				return
+			}
+		}
 		var ok bool
 		var client *redis.Client
 		client, ok = clients.Get()
@@ -1575,6 +1601,20 @@ func classHandle(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 
+	go func() {
+		for {
+			now := time.Now()
+			h := now.Hour()
+			if h == 0 {
+				for k, _ := range LimitAmout {
+					LimitAmout[k] = 0
+				}
+				time.Sleep(3600 * time.Second)
+			}
+			time.Sleep(600 * time.Second)
+		}
+
+	}()
 	logfile, _ := os.OpenFile("./weibo.log", os.O_RDWR|os.O_CREATE, 0)
 	logger = log.New(logfile, "\n", log.Ldate|log.Ltime|log.Lshortfile)
 
