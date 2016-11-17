@@ -197,8 +197,11 @@ func writev2Handle(w http.ResponseWriter, req *http.Request) {
 		strID, _ := client.Get("globalID")
 		key := "weibo_" + strID
 		now := time.Now().Format("2006-01-02 15:04:05")
-		client.HMSet(key, "weiboid", strID, "msg", msg, "author", author, "creatime", now, "supports", 0, "resent", 0,
-			"pictures", pic, "comments", 0)
+		if shop == "0" {
+			client.HMSet(key, "weiboid", strID, "msg", msg, "author", author, "creatime", now, "supports", 0, "resent", 0, "pictures", pic, "comments", 0)
+		} else {
+			client.HMSet(key, "weiboid", strID, "msg", msg, "author", author, "creatime", now, "supports", 0, "resent", 0, "pictures", pic, "comments", 0, "flag", "商家")
+		}
 		client.LPush("weibo_message", strID)
 		user := "user_" + author + "_weibo"
 		client.LPush(user, strID)
