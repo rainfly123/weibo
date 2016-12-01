@@ -267,9 +267,8 @@ http://live.66boss.com/weibo/checkmy?login_user=1
 ```
 
 **9 查询自己关注的人的微博**
-http://live.66boss.com/weibo/check?login_user=1
-
-返回自己关注的人的最新微博
+http://live.66boss.com/weibo/check?login_user=1&startid=xxx
+返回自己关注的人的最新微博 startid 是微博ID， 如果不提供，则默认为0x7fffffff, 如果提供，则返回微博小于这个值的50条微博 注：返回的微博ID 号都是顺序排列的，
 
 ```
    {
