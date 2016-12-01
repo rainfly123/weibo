@@ -876,9 +876,6 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 				}
 			}
 		}
-		if weibo.Weiboid > startID {
-			continue
-		}
 		if weibo.Type == "video" {
 			if strings.Contains(weibo.Video.Url, "abcdefg") || len(weibo.Video.Url) < 5 {
 				continue
@@ -889,11 +886,18 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 			weibo.Type = weibo.Origin.Type
 		}
 		allweibo = append(allweibo, weibo)
-		if len(allweibo) > 49 && startID != 0x7fffffff {
+	}
+	sort.Sort(allweibo)
+	var results ALL_WeiBO
+	for _, v := range allweibo {
+		if v.Weiboid >= startID {
+			continue
+		}
+		results = append(results, v)
+		if len(results) > 49 && startID != 0x7fffffff {
 			break
 		}
 	}
-	sort.Sort(allweibo)
 
 	type MyResponse struct {
 		JsonResponse
@@ -902,7 +906,7 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 	jsonres := MyResponse{}
 	jsonres.Code = 0
 	jsonres.Message = "Succeeded"
-	jsonres.Data = allweibo
+	jsonres.Data = results
 
 	b, _ := json.Marshal(jsonres)
 	io.WriteString(w, string(b))
