@@ -888,6 +888,10 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 		allweibo = append(allweibo, weibo)
 	}
 	sort.Sort(allweibo)
+	if startID == 0 {
+		strID, _ := client.Get("globalID")
+		startID, _ = strconv.Atoi(strID)
+	}
 	var results ALL_WeiBO
 	for _, v := range allweibo {
 		if v.Weiboid >= startID {
