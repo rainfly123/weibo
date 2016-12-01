@@ -794,6 +794,13 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 		io.WriteString(w, string(b))
 		return
 	}
+	var startID int
+	startid := req.FormValue("startid")
+	if len(startid) < 1 {
+		startID = 0x7fffffff
+	} else {
+		startID, _ = strconv.Atoi(startid)
+	}
 
 	var ok bool
 	var client *redis.Client
@@ -869,6 +876,9 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 				}
 			}
 		}
+		if weibo.Weiboid > startID {
+			continue
+		}
 		if weibo.Type == "video" {
 			if strings.Contains(weibo.Video.Url, "abcdefg") || len(weibo.Video.Url) < 5 {
 				continue
@@ -879,6 +889,9 @@ func checkHandle(w http.ResponseWriter, req *http.Request) {
 			weibo.Type = weibo.Origin.Type
 		}
 		allweibo = append(allweibo, weibo)
+		if len(allweibo) > 49 && startID != 0x7fffffff {
+			break
+		}
 	}
 	sort.Sort(allweibo)
 
