@@ -3,13 +3,10 @@
 
 import MySQLdb
 import time
-import string
+import redis
 from DBUtils.PooledDB import PooledDB
 import dbconfig
 
-
-ERROR = {0:"OK", 1:"Parameter Error", 2:"Database Error", 3:u"您已赞", 4:u"你无权开通直播"}
-Default_Snapshot = "http://7xvsyw.com2.z0.glb.qiniucdn.com/n.jpg"
 
 class DbManager():
     def __init__(self):
@@ -30,102 +27,52 @@ _dbManager = DbManager()
 def getConn():
     return _dbManager.getConn()
 
-def Query(ownerid):
-    con = getConn()
-    cur =  con.cursor()
+def Write(cur, weiboid, msg):
+    msg =  MySQLdb.escape_string(msg)
+    sql = """insert into weibo values('{0}', '{1}')""".format(weiboid, msg)
+    try:
+        cur.execute(sql)
+    except:
+        pass
 
-    inited = []
-    live = []
-    stopped = []
-    result = {'ownerid': ownerid}
-
-    sql = "select live.liveid, title, snapshot, persons, date_format(startime, '%Y-%m-%d %H:%i') from live, owner \
-          where live.liveid = owner.liveid and owner.ownerid = {0} and live.state = 0".format(ownerid)
-    cur.execute(sql)
-    res = cur.fetchall()
-
-    for channel in res:
-        temp = dict()
-        temp['liveid'] = channel[0]
-        temp['title'] = channel[1]
-        temp['snapshot'] = channel[2]
-        temp['persons'] = channel[3]
-        temp['startime'] = channel[4]
-        inited.append(temp)
-
-    sql = "select live.liveid, title, snapshot, persons, rtmp_live_url from live, owner \
-          where live.liveid = owner.liveid and owner.ownerid = {0} and live.state = 1".format(ownerid)
-    cur.execute(sql)
-    res = cur.fetchall()
-
-    for channel in res:
-        temp = dict()
-        temp['liveid'] = channel[0]
-        temp['title'] = channel[1]
-        temp['snapshot'] = channel[2]
-        temp['persons'] = channel[3]
-        temp['rtmp_live_url'] = channel[4]
-        live.append(temp)
-
-    sql = "select live.liveid, title, snapshot, persons, playback_hls_url from live, owner\
-          where live.liveid = owner.liveid and owner.ownerid = {0} and live.state = 2".format(ownerid)
-    cur.execute(sql)
-    res = cur.fetchall()
-
-    for channel in res:
-        temp = dict()
-        temp['liveid'] = channel[0]
-        temp['title'] = channel[1]
-        temp['snapshot'] = channel[2]
-        temp['supports'] = channel[3]
-        temp['playback_hls_url'] = channel[4]
-        stopped.append(temp)
-
-    result['inited'] = inited
-    result['live'] = live
-    result['stopped'] =  stopped
-
-
-    cur.close()
-    con.close()
-    return result
-
-def QueryMy(ownerid):
-    con = getConn()
-    cur =  con.cursor()
-
-    inited = list()
-
-    sql = "select live.liveid, state, title, snapshot, tojson, supports, date_format(startime,'%Y-%m-%d %H:%i'),playback_hls_url \
-          from live, owner where live.liveid = owner.liveid and owner.ownerid = {0} and live.state != 1 \
-          order by live.startime desc".format(ownerid)
-    cur.execute(sql)
-    res = cur.fetchall()
-
-    for channel in res:
-        temp = dict()
-        temp['liveid'] = channel[0]
-        temp['state'] = channel[1]
-        temp['title'] = channel[2]
-        temp['snapshot'] = channel[3]
-        temp['tojson'] = channel[4]
-        temp['supports'] = channel[5]
-        temp['startime'] = channel[6]
-        temp['playback_hls_url'] = channel[7]
-        inited.append(temp)
-    cur.close()
-    con.close()
-    return inited
-
+def Users(cur, userid, name):
+    name =  MySQLdb.escape_string(name)
+    sql = """insert into user values('{0}', '{1}')""".format(userid, name)
+    try:
+        cur.execute(sql)
+    except:
+        pass
 
 if __name__ ==  '__main__':
-    #print Support("z1.mycs.xiechc",11233)
-    import cjson
-#    print cjson.encode(Products("13"))
-#    print cjson.encode(Products("1"))
-#    print Products("b")
-    #SaveProducts("z1.66boss.xiechc",['1','2','3'])
-    print HasLive('00')
-    a = u"王"
-    b =u"女"
-    ApplyLive("1234", a.encode('utf-8'), b.encode('utf-8'), "133333333333", "afadf.jpg")
+    r = redis.Redis(host='localhost',port=6379,db=0)
+    #string
+    globalid = r.get('globalID')
+    globalid = int(globalid)
+    con = getConn()
+    cur =  con.cursor()
+    cur.execute("SET NAMES utf8mb4");
+    con.commit()
+
+    for i in xrange(globalid):
+        key = "weibo_" + str(i)
+        weibo = r.hgetall(key)
+        if not weibo.has_key("weiboid"):
+            continue
+        Write(cur, weibo['weiboid'], weibo['msg'])
+
+    con.commit()
+
+
+    allusers = r.smembers('all_users')
+
+    for user in allusers:
+        key = "user_" + user + "_profile"
+        userinfo = r.hget(key, "nickname")
+        if userinfo is None:
+            continue
+        Users(cur, user, userinfo)
+
+    con.commit()
+
+    cur.close()
+    con.close()

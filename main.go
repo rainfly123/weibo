@@ -60,6 +60,7 @@ type User struct {
 var LimitAmout = map[string]uint32{}
 
 type ALL_WeiBO []WeiBo
+type ALL_User []User
 
 func (list ALL_WeiBO) Len() int {
 	return len(list)
@@ -72,7 +73,7 @@ func (list ALL_WeiBO) Swap(i, j int) {
 }
 
 var logger *log.Logger
-var host = "192.168.1.251"
+var host = "127.0.0.1"
 var port = uint(6379)
 var clients redisPool
 
@@ -206,6 +207,7 @@ func writev2Handle(w http.ResponseWriter, req *http.Request) {
 		user := "user_" + author + "_weibo"
 		client.LPush(user, strID)
 		client.Incr("globalID")
+                syncweibo(strID)
 
 		type MyResponse struct {
 			JsonResponse
@@ -298,6 +300,7 @@ func writev3Handle(w http.ResponseWriter, req *http.Request) {
 		user := "user_" + author + "_weibo"
 		client.LPush(user, strID)
 		client.Incr("globalID")
+                syncweibo(strID)
 
 		snapshot := "http://7xvsyw.com1.z0.glb.clouddn.com/b.jpg"
 		client.HMSet(key_video, "state", 1, "snapshot", snapshot, "type", vtype, "url", "abcdefg")
@@ -352,6 +355,7 @@ func writev4Handle(w http.ResponseWriter, req *http.Request) {
 	user := "user_" + author + "_weibo"
 	client.LPush(user, strID)
 	client.Incr("globalID")
+        syncweibo(strID)
 
 	type MyResponse struct {
 		JsonResponse
@@ -1390,15 +1394,15 @@ func squareHandle(w http.ResponseWriter, req *http.Request) {
 			case 2:
 				weibo.Author = v
 				if strings.EqualFold(weibo.Author, author) {
-					weibo.Concern = true
-				} else {
-					has := sort.SearchStrings(fansofwho, weibo.Author)
-					if has < total {
-						if strings.EqualFold(weibo.Author, fansofwho[has]) {
-							weibo.Concern = true
-						}
-					}
-				}
+				       weibo.Concern = true
+                                } else {
+				    has := sort.SearchStrings(fansofwho, weibo.Author)
+				    if has < total {
+					    if strings.EqualFold(weibo.Author, fansofwho[has]) {
+						weibo.Concern = true
+					    }
+				    }
+                                }
 			case 3:
 				weibo.Creatime = v
 
@@ -1622,6 +1626,130 @@ func classHandle(w http.ResponseWriter, req *http.Request) {
 	b, _ := json.Marshal(jsonres)
 	io.WriteString(w, string(b))
 }
+func searchHandle(w http.ResponseWriter, req *http.Request) {
+	key := req.FormValue("key")
+	login_user := req.FormValue("login_user")
+	startid := req.FormValue("startid")
+
+	if len(startid) < 1 || len(key) < 1 || len(login_user) < 1 {
+		jsonres := JsonResponse{1, "argument error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
+	}
+        var startID int
+	startID, _ = strconv.Atoi(startid)
+
+        var users ALL_User
+        var weibos ALL_WeiBO
+	var ok bool
+	var client *redis.Client
+	client, ok = clients.Get()
+	if ok != true {
+		jsonres := JsonResponse{2, "system error"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+		return
+	}
+        searchResults := search(key)
+        for _, userid := range searchResults.Users {
+            user := getUserinfoLoginuser(login_user, userid, client, false)
+            users = append(users, user) 
+        }
+
+	for _, vv := range searchResults.Weibos {
+		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video", "redpacketid")
+		if err != nil {
+			continue
+		}
+		var weibo WeiBo
+		for i, v := range ls {
+			switch i {
+			case 0:
+				weibo.Weiboid, _ = strconv.Atoi(v)
+				weibo.Support = alreadSupport(weibo.Weiboid, login_user, client)
+			case 1:
+				weibo.Msg = v
+			case 2:
+				weibo.Author = v
+				weibo.Concern = true
+			case 3:
+				weibo.Creatime = v
+			case 4:
+				weibo.Supports, _ = strconv.Atoi(v)
+			case 5:
+				weibo.Resent, _ = strconv.Atoi(v)
+			case 6:
+				if len(v) >= 3 {
+					temp := strings.Split(v, ",")
+					weibo.Pictures = append(weibo.Pictures, temp[:len(temp)]...)
+				}
+			case 7:
+				weibo.Comments, _ = strconv.Atoi(v)
+			case 8:
+				weibo.Origin = getWeibo(v, client)
+			case 9:
+				weibo.Flag = v
+			case 10:
+				if len(v) >= 1 {
+					weibo.Video = getVideoinfo(v, client)
+					weibo.Type = "video"
+				} else {
+					weibo.Type = "text"
+				}
+
+			case 11:
+				if len(v) >= 1 {
+					weibo.Redevpid = v
+					weibo.Type = "redpacket"
+				}
+			}
+		}
+		if weibo.Type == "video" {
+			if strings.Contains(weibo.Video.Url, "abcdefg") || len(weibo.Video.Url) < 5 {
+				continue
+			}
+		}
+		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
+		if weibo.Origin != nil {
+			weibo.Type = weibo.Origin.Type
+		}
+		weibos = append(weibos, weibo)
+	}
+	sort.Sort(weibos)
+	if startID == 0 {
+		strID, _ := client.Get("globalID")
+		startID, _ = strconv.Atoi(strID)
+	}
+	var results ALL_WeiBO
+	for _, v := range weibos {
+		if v.Weiboid >= startID {
+			continue
+		}
+		results = append(results, v)
+		if len(results) > 49 {
+			break
+		}
+	}
+
+	type DataS struct {
+		Weibos ALL_WeiBO `json:"weibos"`
+		Users ALL_User `json:"users"`
+        }
+	type MyResponse struct {
+		JsonResponse
+		Data DataS `json:"data"`
+	}
+	jsonres := MyResponse{}
+	jsonres.Code = 0
+	jsonres.Message = "Succeeded"
+	jsonres.Data = DataS{results, users}
+
+	b, _ := json.Marshal(jsonres)
+	io.WriteString(w, string(b))
+	client.Close()
+}
+
 
 func main() {
 
@@ -1685,9 +1813,10 @@ func main() {
 	http.HandleFunc("/flag", flagHandle)
 	http.HandleFunc("/queryclass", classHandle)
 	http.HandleFunc("/test", testHandle)
+	http.HandleFunc("/search", searchHandle)
 
 	http.Handle("/", http.FileServer(http.Dir("./upload")))
 
-	if err := http.ListenAndServe(":8888", nil); err != nil {
+	if err := http.ListenAndServe(":9090", nil); err != nil {
 	}
 }
