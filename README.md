@@ -574,3 +574,18 @@ http://live.66boss.com/weibo/queryclass
 
 **20 设置分类**
 http://live.66boss.com/weibo/flag?weiboid=xx&class=名人
+
+**21广场搜索**
+http://live.66boss.com/weibo/search?login_user=3&key=感冒&startid=0
+对所有微博和用户昵称搜索，支持分页，第一次调用startid=0,然后设置成返回数据中最小微博ＩＤ
+
+```
+{
+"code": 0,
+"message": "Succeeded",
+"data": {
+"weibos": [],
+"users": []
+}
+}
+```
