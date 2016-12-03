@@ -207,7 +207,7 @@ func writev2Handle(w http.ResponseWriter, req *http.Request) {
 		user := "user_" + author + "_weibo"
 		client.LPush(user, strID)
 		client.Incr("globalID")
-                syncweibo(strID)
+                go syncweibo(strID)
 
 		type MyResponse struct {
 			JsonResponse
@@ -300,7 +300,7 @@ func writev3Handle(w http.ResponseWriter, req *http.Request) {
 		user := "user_" + author + "_weibo"
 		client.LPush(user, strID)
 		client.Incr("globalID")
-                syncweibo(strID)
+                go syncweibo(strID)
 
 		snapshot := "http://7xvsyw.com1.z0.glb.clouddn.com/b.jpg"
 		client.HMSet(key_video, "state", 1, "snapshot", snapshot, "type", vtype, "url", "abcdefg")
@@ -355,7 +355,7 @@ func writev4Handle(w http.ResponseWriter, req *http.Request) {
 	user := "user_" + author + "_weibo"
 	client.LPush(user, strID)
 	client.Incr("globalID")
-        syncweibo(strID)
+        go syncweibo(strID)
 
 	type MyResponse struct {
 		JsonResponse
