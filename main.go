@@ -1490,8 +1490,8 @@ func filterHandle(w http.ResponseWriter, req *http.Request) {
 
 	client.SAdd("all_users", author) //new user inter weibo system
 
-	weibos, _ := client.LRange("weibo_message", 0, 50)
-	allweibo := make(ALL_WeiBO, 0, 100)
+	weibos, _ := client.LRange("weibo_message", 0, -1)
+	allweibo := make(ALL_WeiBO, 0, 50)
 	for _, vv := range weibos {
 		//ls, err := client.HGetAll("weibo_" + vv)
 		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video", "redpacketid")
@@ -1560,6 +1560,9 @@ func filterHandle(w http.ResponseWriter, req *http.Request) {
 		}
 		weibo.Userinfo = getUserinfo(weibo.Author, client, false)
 		allweibo = append(allweibo, weibo)
+                if len(allweibo) >= 50 {
+                    break
+                }
 	}
 	//sort.Sort(allweibo)
 	type MyResponse struct {
