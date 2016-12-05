@@ -42,6 +42,7 @@ func Checkvideo(redis_key string, origin string) {
 		//cmd.Stdout = os.Stdout
 		//cmd.Stderr = os.Stderr
 		err := cmd.Run()
+                logger.Println(err)
 		if err == nil {
 			snapshot = ACCESS_VIDEO_URL + path.Base(dest)
 		}

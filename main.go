@@ -1767,7 +1767,7 @@ func main() {
 		}
 
 	}()
-	logfile, _ := os.OpenFile("./weibo.log", os.O_RDWR|os.O_CREATE, 0)
+	logfile, _ := os.OpenFile("/var/log/weibo.log", os.O_RDWR|os.O_CREATE, 0)
 	logger = log.New(logfile, "\n", log.Ldate|log.Ltime|log.Lshortfile)
 
 	clients.connFn = newcon
@@ -1816,7 +1816,7 @@ func main() {
 	http.HandleFunc("/test", testHandle)
 	http.HandleFunc("/search", searchHandle)
 
-	http.Handle("/", http.FileServer(http.Dir("./upload")))
+	http.Handle("/", http.FileServer(http.Dir("/root/git/weibo/upload")))
 
 	if err := http.ListenAndServe(":9090", nil); err != nil {
 	}
