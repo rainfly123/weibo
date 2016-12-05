@@ -1771,6 +1771,7 @@ func main() {
 	logger = log.New(logfile, "\n", log.Ldate|log.Ltime|log.Lshortfile)
 
 	clients.connFn = newcon
+	clients.connections = make(chan *redis.Client,10)
 	Channel = make(chan string, 100)
 	go Check_thread()
 
