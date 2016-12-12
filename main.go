@@ -1717,6 +1717,9 @@ func searchHandle(w http.ResponseWriter, req *http.Request) {
 		if weibo.Origin != nil {
 			weibo.Type = weibo.Origin.Type
 		}
+                if weibo.Weiboid == 0 {
+                    continue
+                }
 		weibos = append(weibos, weibo)
 	}
 	sort.Sort(weibos)
