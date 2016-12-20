@@ -166,7 +166,8 @@ http://live.66boss.com/weibo/cancelconcern?login_user=1&cancel=2
 用户1，取消关注用户2，不在是其粉丝
 
 **8 查询自己的微博**
-http://live.66boss.com/weibo/checkmy?login_user=1
+http://live.66boss.com/weibo/checkmy?login_user=1&startid=0 第一次调用startid=0
+后续设置为返回数据中最小的weiboid
 返回列表JSON
 ```
 {
@@ -535,6 +536,9 @@ http://live.66boss.com/weibo/square?login_user=xx
 ]}
 ```
 
+**14.1 查询广场分页**
+http://live.66boss.com/weibo/squarev2?login_user=xx&startid=0 第一次调用设置为0,后续设置为返回数据中最小的weiboid
+
 **15 删除自己的微博**
 http://live.66boss.com/weibo/delete?login_user=2&weiboid=3
 
@@ -549,6 +553,9 @@ Multipart-Form name="file"
 
 **18 广场带过滤参数 (军事、商家、科学、文学、社会、政治、名人、财经**
 http://live.66boss.com/weibo/squarefilter?login_user=xx&class=名人
+**18.1 广场带过滤参数 (军事、商家、科学、文学、社会、政治、名人、财经) 支持分页**
+http://live.66boss.com/weibo/squarefilterv2?login_user=xx&class=军事&startid=0 第一次调用设置为0,后续设置为返回数据中最小的weiboid
+
 
 **19  查询分类名称**
 http://live.66boss.com/weibo/queryclass
