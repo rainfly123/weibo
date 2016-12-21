@@ -295,7 +295,7 @@ func writev3Handle(w http.ResponseWriter, req *http.Request) {
 		key := "weibo_" + strID
 		key_video := key + "_video"
 		now := time.Now().Format("2006-01-02 15:04:05")
-		client.HMSet(key, "weiboid", strID, "msg", msg, "author", author, "creatime", now, "supports", 0, "resent", 0, "video", key_video, "comments", 0)
+		client.HMSet(key, "weiboid", strID, "msg", msg, "author", author, "creatime", now, "supports", 0, "resent", 0, "video", key_video, "comments", 0, "flag", "视频")
 		client.LPush("weibo_message", strID)
 		user := "user_" + author + "_weibo"
 		client.LPush(user, strID)
@@ -1876,7 +1876,7 @@ func flagHandle(w http.ResponseWriter, req *http.Request) {
 }
 
 func classHandle(w http.ResponseWriter, req *http.Request) {
-	var classname = [...]string{"红包", "商家", "娱乐", "幽默", "政治", "军事", "财经", "社会", "文学", "名人", "电影", "旅游"}
+	var classname = [...]string{"红包", "商家", "视频", "娱乐", "幽默", "政治", "军事", "财经", "社会", "文学", "名人", "电影", "旅游"}
 	type MyResponse struct {
 		JsonResponse
 		Class []string `json:"data"`
@@ -2089,6 +2089,6 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("/root/git/weibo/upload")))
 
-	if err := http.ListenAndServe(":5050", nil); err != nil {
+	if err := http.ListenAndServe(":9090", nil); err != nil {
 	}
 }
