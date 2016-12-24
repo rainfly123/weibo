@@ -148,6 +148,45 @@ func receiveFile(w http.ResponseWriter, req *http.Request, name string) string {
 	Resize(uuidFile)
 	return (ACCESS_URL + temp)
 }
+func livesnpHandle(w http.ResponseWriter, req *http.Request) {
+	if req.Method == "GET" {
+		io.WriteString(w, fmt.Sprintf("<html><head><title>我的第一个页面</title></head><body><form action=\"livesnp?liveid=%s\" method=\"post\" enctype=\"multipart/form-data\"><label>上传图片</label><input type=\"file\" name='file'/><br/><label><input type=\"submit\" value=\"上传图片\"/></label></form></body></html>", req.FormValue("liveid")))
+	} else {
+		liveid := req.FormValue("liveid")
+		if len(liveid) < 5 {
+		    jsonres := JsonResponse{1, "argument error"}
+		    b, _ := json.Marshal(jsonres)
+		    io.WriteString(w, string(b))
+		    return
+		}
+                file, _, err := req.FormFile("file")
+	        if err != nil {
+                    jsonres := JsonResponse{1, "argument error"}
+                    b, _ := json.Marshal(jsonres)
+                    io.WriteString(w, string(b))
+                    return
+	        }
+	        defer file.Close()
+	        temp := liveid 
+        	uuidFile := UPLOAD_VIDEO_PATH + temp
+                fW, err := os.Create(uuidFile)
+                if err != nil {
+		    fmt.Println("create file error")
+                    return
+	        }
+         	_, err = io.Copy(fW, file)
+	        if err != nil {
+		    fmt.Println("copy file error")
+		    return 
+	        }
+	        fW.Close()
+	        Resize(uuidFile)
+
+		jsonres := JsonResponse{0, "OK"}
+		b, _ := json.Marshal(jsonres)
+		io.WriteString(w, string(b))
+	}
+}
 
 func writev2Handle(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "GET" {
@@ -2072,6 +2111,7 @@ func main() {
 	http.HandleFunc("/write", writeHandle)
 	http.HandleFunc("/writev2", writev2Handle)
 	http.HandleFunc("/writev3", writev3Handle)
+	http.HandleFunc("/livesnp", livesnpHandle)
 	http.HandleFunc("/writev4", writev4Handle)
 	http.HandleFunc("/comment", commentHandle)
 	http.HandleFunc("/checkcomment", checkcommentHandle)
