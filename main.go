@@ -999,7 +999,7 @@ func checkmyHandle(w http.ResponseWriter, req *http.Request) {
 
 	allweibo := make(ALL_WeiBO, 0, 50)
 	for _, vv := range weibos {
-                if strings.Compare(vv, startID) > 0 {
+                if strings.Compare(vv, startID) >= 0 {
                     continue
                 }
 		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video", "redpacketid")
@@ -1556,7 +1556,7 @@ func squarev2Handle(w http.ResponseWriter, req *http.Request) {
 	weibos, _ := client.LRange("weibo_message", 0, -1)
 	allweibo := make(ALL_WeiBO, 0, 50)
 	for _, vv := range weibos {
-                if strings.Compare(vv, startID) > 0 {
+                if strings.Compare(vv, startID) >= 0 {
                     continue
                 }
 		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video", "redpacketid")
@@ -1800,7 +1800,7 @@ func filterv2Handle(w http.ResponseWriter, req *http.Request) {
 	weibos, _ := client.LRange("weibo_message", 0, -1)
 	allweibo := make(ALL_WeiBO, 0, 50)
 	for _, vv := range weibos {
-                if strings.Compare(vv, startID) > 0 {
+                if strings.Compare(vv, startID) >= 0 {
                     continue
                 }
 		ls, err := client.HMGet("weibo_"+vv, "weiboid", "msg", "author", "creatime", "supports", "resent", "pictures", "comments", "origin", "flag", "video", "redpacketid")
