@@ -1922,6 +1922,51 @@ func flagHandle(w http.ResponseWriter, req *http.Request) {
 	client.Close()
 }
 
+func classv2Handle(w http.ResponseWriter, req *http.Request) {
+     
+        type Sclass struct {
+            Name string     `json:"name"`
+            Icon string     `json:"icon"`
+        }
+        type Sad struct {
+            Url string      `json:"url"`
+            Action string   `json:"action"`
+        }
+	type MyResponse struct {
+		JsonResponse
+		Class []Sclass  `json:"data"`
+		Ads   []Sad     `json:"ads"`
+	}
+	var classname = [...]Sclass{
+            {"红包", "http://livecdn.66boss.com/weibo_video/v_red@3x.png"},
+            {"商家", "http://livecdn.66boss.com/weibo_video/v_shop@3x.png"},
+            {"视频", "http://livecdn.66boss.com/weibo_video/v_video@3x.png"},
+            {"娱乐", "http://livecdn.66boss.com/weibo_video/v_happy@3x.png"},
+            {"幽默", "http://livecdn.66boss.com/weibo_video/v_humor@3x.png"},
+            {"政治", "http://livecdn.66boss.com/weibo_video/v_politics@3x.png"},
+            {"军事", "http://livecdn.66boss.com/weibo_video/v_military@3x.png"},
+            {"财经", "http://livecdn.66boss.com/weibo_video/v_finance@3x.png"},
+            {"社会", "http://livecdn.66boss.com/weibo_video/v_society@3x.png"},
+            {"更多", "http://livecdn.66boss.com/weibo_video/v_more@3x.png"},
+            {"文学", "http://livecdn.66boss.com/weibo_video/v_literature@3x.png"},
+            {"名人", "http://livecdn.66boss.com/weibo_video/v_celebrity@3x.png"},
+            {"电影", "http://livecdn.66boss.com/weibo_video/v_movie@3x.png"},
+            {"旅游", "http://livecdn.66boss.com/weibo_video/v_tour@3x.png"},
+        }
+        var adname = [...]Sad {
+            {"http://livecdn.66boss.com/weibo_video/v_banner@3x.png", ""},
+        }
+	jsonres := MyResponse{}
+
+	jsonres.Code = 0
+	jsonres.Message = "Succeeded"
+	jsonres.Class = classname[:]
+	jsonres.Ads = adname[:]
+
+	b, _ := json.Marshal(jsonres)
+	io.WriteString(w, string(b))
+}
+
 func classHandle(w http.ResponseWriter, req *http.Request) {
 	var classname = [...]string{"红包", "商家", "视频", "娱乐", "幽默", "政治", "军事", "财经", "社会", "文学", "名人", "电影", "旅游"}
 	type MyResponse struct {
@@ -1939,6 +1984,7 @@ func classHandle(w http.ResponseWriter, req *http.Request) {
 	b, _ := json.Marshal(jsonres)
 	io.WriteString(w, string(b))
 }
+
 func searchHandle(w http.ResponseWriter, req *http.Request) {
 	key := req.FormValue("key")
 	login_user := req.FormValue("login_user")
@@ -2132,6 +2178,7 @@ func main() {
 	http.HandleFunc("/delete", deleteHandle)
 	http.HandleFunc("/flag", flagHandle)
 	http.HandleFunc("/queryclass", classHandle)
+	http.HandleFunc("/queryclassv2", classv2Handle)
 	http.HandleFunc("/test", testHandle)
 	http.HandleFunc("/search", searchHandle)
 
