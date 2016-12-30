@@ -596,3 +596,76 @@ http://live.66boss.com/weibo/search?login_user=3&key=感冒&startid=0
 }
 }
 ```
+**22查询分类-广告图**
+http://live.66boss.com/weibo/queryclassv2
+
+```
+de": 0,
+"message": "Succeeded",
+"data": [
+{
+"name": "红包",
+"icon": "http://livecdn.66boss.com/weibo_video/v_red@3x.png"
+},
+{
+"name": "商家",
+"icon": "http://livecdn.66boss.com/weibo_video/v_shop@3x.png"
+},
+{
+"name": "视频",
+"icon": "http://livecdn.66boss.com/weibo_video/v_video@3x.png"
+},
+{
+"name": "娱乐",
+"icon": "http://livecdn.66boss.com/weibo_video/v_happy@3x.png"
+},
+{
+"name": "幽默",
+"icon": "http://livecdn.66boss.com/weibo_video/v_humor@3x.png"
+},
+{
+"name": "政治",
+"icon": "http://livecdn.66boss.com/weibo_video/v_politics@3x.png"
+},
+{
+"name": "军事",
+"icon": "http://livecdn.66boss.com/weibo_video/v_military@3x.png"
+},
+{
+"name": "财经",
+"icon": "http://livecdn.66boss.com/weibo_video/v_finance@3x.png"
+},
+{
+"name": "社会",
+"icon": "http://livecdn.66boss.com/weibo_video/v_society@3x.png"
+},
+{
+"name": "更多",
+"icon": "http://livecdn.66boss.com/weibo_video/v_more@3x.png"
+},
+{
+"name": "文学",
+"icon": "http://livecdn.66boss.com/weibo_video/v_literature@3x.png"
+},
+{
+"name": "名人",
+"icon": "http://livecdn.66boss.com/weibo_video/v_celebrity@3x.png"
+},
+{
+"name": "电影",
+"icon": "http://livecdn.66boss.com/weibo_video/v_movie@3x.png"
+},
+{
+"name": "旅游",
+"icon": "http://livecdn.66boss.com/weibo_video/v_tour@3x.png"
+}
+],
+"ads": [
+{
+"url": "http://livecdn.66boss.com/weibo_video/v_banner@3x.png",
+"action": ""
+}
+]
+}
+
+```
