@@ -1932,10 +1932,13 @@ func classv2Handle(w http.ResponseWriter, req *http.Request) {
             Url string      `json:"url"`
             Action string   `json:"action"`
         }
+        type Sdata struct {
+            Class []Sclass  `json:"classes"`
+            Ads []Sad       `json:"ads"`
+        }
 	type MyResponse struct {
 		JsonResponse
-		Class []Sclass  `json:"data"`
-		Ads   []Sad     `json:"ads"`
+		Data Sdata `json:"data"`
 	}
 	var classname = [...]Sclass{
             {"红包", "http://livecdn.66boss.com/weibo_video/v_red@3x.png"},
@@ -1955,13 +1958,14 @@ func classv2Handle(w http.ResponseWriter, req *http.Request) {
         }
         var adname = [...]Sad {
             {"http://livecdn.66boss.com/weibo_video/v_banner@3x.png", ""},
+            {"http://livecdn.66boss.com/weibo_video/v_banner@3x.png", ""},
+            {"http://livecdn.66boss.com/weibo_video/v_banner@3x.png", ""},
         }
 	jsonres := MyResponse{}
 
 	jsonres.Code = 0
 	jsonres.Message = "Succeeded"
-	jsonres.Class = classname[:]
-	jsonres.Ads = adname[:]
+	jsonres.Data = Sdata{classname[:], adname[:]}
 
 	b, _ := json.Marshal(jsonres)
 	io.WriteString(w, string(b))
